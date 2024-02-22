@@ -1,4 +1,4 @@
-const {dbConnect} = require('./connect');
+const {getConnection} = require('./connect');
 
 const {modelUsers} = require('./users');
 const { modelFiles } = require('./files');
@@ -9,9 +9,9 @@ const { modelRelations } = require('./relations');
 
 const createSchema = async() => {
     try {
-        const conn = await dbConnect();
+        const conn = getConnection();
         const res = await conn.query("SHOW TABLES");
-        if (res.length !== 6) {
+        if (res.length < 6) {
             console.log(res);
             modelUsers(conn);
             modelFiles(conn);

@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/main.js",
-    "start": "node src/main.js",
-    "migration": "node src/db/createSchema.js"
+    "start": "node src/main.js"
   },
   "keywords": [
     "javascript",
@@ -20,10 +19,12 @@
     "nodemon": "^3.0.3"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.4",
     "express": "^4.18.2",
-    "mariadb": "^3.2.3"
+    "mariadb": "^3.2.3",
+    "multer": "^1.4.5-lts.1"
   }
 }

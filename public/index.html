@@ -6,6 +6,16 @@
     <title>Nas - Network Drive</title>
 </head>
 <body>
-    <h3> This is Nas-Cluster website home page.</h3>
+    <h3> User form </h3>
+    <form action="http://localhost:8000/api/v1/users/register" method="post" enctype="multipart/form-data">
+        <label for="username">Name:</label><br>
+        <input type="text" id="username" name="username" value="John"><br>
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email" value="">
+        <input type="text" name="first_name" value="John">
+        <input type="text" name="last_name" value="Doe">
+        <input type="file" name="profile" id="profile">
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
