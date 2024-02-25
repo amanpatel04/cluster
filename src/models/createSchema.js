@@ -1,6 +1,6 @@
-const {getConnection} = require('./connect');
+const {getConnection} = require('../db/connect');
 
-const {modelUsers} = require('./users');
+const {modelUsers} = require('./user');
 const { modelFiles } = require('./files');
 const { modelVideos } = require('./videos');
 const { modelAudio } = require('./audio');
@@ -12,7 +12,6 @@ const createSchema = async() => {
         const conn = getConnection();
         const res = await conn.query("SHOW TABLES");
         if (res.length < 6) {
-            console.log(res);
             modelUsers(conn);
             modelFiles(conn);
             modelVideos(conn);

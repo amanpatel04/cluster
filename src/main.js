@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const {app} = require("./app");
 const { dbConnect } = require("./db/connect");
-const { createSchema } = require("./db/createSchema");
+const { createSchema } = require("./models/createSchema");
 
 dbConnect()
 .then(() => {

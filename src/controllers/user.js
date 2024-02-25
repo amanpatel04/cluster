@@ -1,9 +1,18 @@
 const {asyncHandler} = require("../utils/asyncHandler");
 const {ApiResponse} = require("../utils/ApiResponse");
 const {ApiError} = require("../utils/ApiError");
-const {insertUser, test, isExist, getField} = require("../db/users");
+const {insertUser, isExist, getField, updateValue, getFieldById} = require("../db/user");
+const {genrateAccessToken, genrateRefreshToken} = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const {options} = require("../constants");
 
+const genrateToken = async (uid, user, email) => {
+    const accessToken = genrateAccessToken(uid, user, email);
+    const refreshToken = genrateRefreshToken(uid);
+    await updateValue("refresh_token", refreshToken, uid);
+    return {accessToken, refreshToken};
+}
 
 const register = asyncHandler(async (req, res) => {
     
@@ -45,14 +54,47 @@ const login = asyncHandler(async (req, res) => {
     {
         throw new ApiError(400, `${user.username} do not found`);
     }
-    const re = await getField("username, password", user.username);
-
-    if (await bcrypt.compare(user.password, re[0].password)) {
+    const re = await getField("id, username, email, password", user.username);
+    const record = re[0];
+    if (await bcrypt.compare(user.password, record.password)) {
         console.log(`${re[0].username} password is correct.`);
-        return res.status(201).json(new ApiResponse(200, user, "user login successful"));
+        const {accessToken, refreshToken} = await genrateToken(record.id, record.username, record.email);
+        return res.status(201)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(new ApiResponse(200, {user : user, accessToken, refreshToken}, "user login successful"));
     }
     throw new ApiError(400, "Password did not matched try again");
 
 });
 
-module.exports = { register, login };
+const logout = asyncHandler(async (req, res) => {
+    await updateValue("refresh_token", "NULL", req.user.id);
+    return res.status(200)
+            .clearCookie("accessToken", options)
+            .clearCookie("refreshToken", options)
+            .json(new ApiResponse(200, {}, "user logged out successfully"));
+});
+
+const loginRenew = asyncHandler(async (req, res) => {
+    const token = req.cookies?.refreshToken || req.header("Authorization")?.replace("Bearer ", "");
+    if (!token) {
+        throw new ApiError(401, "Something went wrong.");
+    }
+    const decodeToken = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const user = await getFieldById("*", decodeToken._id);
+    if (!user) {
+        throw new ApiError(401, "Something went wrong");
+    }
+    if(token !== user.refresh_token) {
+        throw new ApiError(401, "login with invalid key");
+    }
+    const {accessToken, refreshToken} = await genrateToken(user.id, user.username, user.email);
+    delete user.refresh_token;
+    return res.status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(new ApiResponse(200, {user: user, accessToken, refreshToken}, "login successful"));
+});
+
+module.exports = { register, login, logout, loginRenew };
