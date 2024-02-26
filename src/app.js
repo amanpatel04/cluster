@@ -10,8 +10,10 @@ app.use(cookieParser());
 
 // Roter imports
 const {router: usersRouter} = require("./routes/users");
+const {router: imageRouter} = require("./routes/image");
 
 app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/images", imageRouter);
 
 
 module.exports = { app };
