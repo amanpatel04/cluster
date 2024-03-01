@@ -33,6 +33,7 @@ const getFieldById = async (field, value) => {
         `);
         const user = res[0];
         delete user.password;
+        delete user.refresh_token;
         return user;
     } catch (error) {
         console.log(`Error while fetching for login ${error}`);
