@@ -7,7 +7,7 @@ const imageCreate = async(image = {}) => {
             INSERT INTO files (url, title, size, file_type)VALUES("${image.url}", "${image.title}", ${image.size}, "image");
         `);
         const rel = await conn.query(`
-            INSERT INTO user_files (user_id, file_id) VALUES (${image.user}, ${res.insertId});
+            INSERT INTO user_images (user_id, file_id) VALUES (${image.user}, ${res.insertId});
         `);
     } catch (error) {
         console.log(`Error while saving image : ${error}`);

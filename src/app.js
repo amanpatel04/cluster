@@ -11,9 +11,13 @@ app.use(cookieParser());
 // Roter imports
 const {router: usersRouter} = require("./routes/users");
 const {router: imageRouter} = require("./routes/image");
+const {router: audioRouter} = require("./routes/audio");
+const {router: otherRouter} =  require("./routes/other");
 
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/images", imageRouter);
+app.use("/api/v1/audio", audioRouter);
+app.use("/api/v1/other", otherRouter);
 
 
 module.exports = { app };
