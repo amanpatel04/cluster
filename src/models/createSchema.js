@@ -5,7 +5,7 @@ const { modelFiles } = require('./files');
 const { modelVideos } = require('./videos');
 const { modelAudio } = require('./audio');
 const { modelOthers } = require('./others');
-const { modelRelations } = require('./relations');
+const { modelImage } = require('./image');
 
 const createSchema = async() => {
     try {
@@ -17,7 +17,7 @@ const createSchema = async() => {
             modelVideos(conn);
             modelAudio(conn);
             modelOthers(conn);
-            modelRelations(conn);
+            modelImage(conn);
         } else {
             console.log('Database schema already exists');
         }
