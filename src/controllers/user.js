@@ -97,4 +97,16 @@ const loginRenew = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {user: user, accessToken, refreshToken}, "login successful"));
 });
 
-module.exports = { register, login, logout, loginRenew };
+const get = asyncHandler(async (req, res)=> {
+    const user = req.user;
+    return res
+    .status(200)
+    .json(new ApiResponse(200, user, `record of user with id : ${user.id}`));
+});
+
+module.exports = { register,
+    login,
+    logout,
+    loginRenew,
+    get
+ };

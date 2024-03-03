@@ -14,6 +14,20 @@ const videoCreate = async(video = {}) => {
     }
 }
 
+const getVideoById = async(id) => {
+    try {
+        const conn = getConnection();
+        const res = await conn.query(`
+            select file.id, file.url, file.title, file.size, file.file_type, file.created_at, video.poster, video.duration from files file inner join user_videos video on file.id = video.file_id and video.user_id=${id};
+        `);
+        return res;
+    } catch (error) {
+        console.log(`Error while getting video by id : ${error}`);
+        return null;
+    }
+}
+
 module.exports = {
-    videoCreate
+    videoCreate,
+    getVideoById
 }

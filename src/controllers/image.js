@@ -1,6 +1,8 @@
 const {asyncHandler} = require("../utils/asyncHandler");
 const {ApiResponse} = require("../utils/ApiResponse");
-const {imageCreate} = require("../db/image");
+const {imageCreate,
+    getImageById        
+} = require("../db/image");
 
 const imageUpload = asyncHandler(async(req, res) => {
     let image = {};
@@ -12,4 +14,14 @@ const imageUpload = asyncHandler(async(req, res) => {
     res.status(200).json(new ApiResponse(200, {}, "File saved"));
 });
 
-module.exports = { imageUpload };
+const get = asyncHandler(async (req, res) => {
+    const image = await getImageById(req.user.id);
+    return res
+    .status(200)
+    .json(new ApiResponse(200, image, `All image file of userId : ${req.user.id}`));
+});
+
+module.exports = { 
+    imageUpload,
+    get
+};

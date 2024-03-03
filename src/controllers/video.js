@@ -1,6 +1,9 @@
 const {asyncHandler} = require("../utils/asyncHandler");
 const {ApiResponse} = require("../utils/ApiResponse");
-const {videoCreate} = require("../db/video");
+const {
+    videoCreate,
+    getVideoById
+} = require("../db/video");
 
 const videoUpload = asyncHandler(async(req, res) => {
     let video = {};
@@ -14,4 +17,14 @@ const videoUpload = asyncHandler(async(req, res) => {
     res.status(200).json(new ApiResponse(200, {}, "File saved"));
 });
 
-module.exports = { videoUpload };
+const videoGet = asyncHandler(async (req, res) => {
+    const video = await getVideoById(req.user.id);
+    return res
+    .status(200)
+    .json(new ApiResponse(200, video, `All video file of userId : ${req.user.id}`));
+});
+
+module.exports = { 
+    videoUpload,
+    videoGet
+};

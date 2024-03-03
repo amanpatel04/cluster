@@ -14,6 +14,20 @@ const audioCreate = async(audio = {}) => {
     }
 }
 
+const getAudioById = async (id) => {
+    try {
+        const conn = getConnection();
+        const res = await conn.query(`
+            select file.id, file.url, file.title, file.size, file.file_type, file.created_at, audio.duration from files file inner join user_audios audio on file.id = audio.file_id and audio.user_id=${id};
+        `);
+        return res;
+    } catch (error) {
+        console.log(`Error while getting audio by id : ${error}`);
+        return null;
+    }
+}
+
 module.exports = {
-    audioCreate
+    audioCreate,
+    getAudioById
 }
