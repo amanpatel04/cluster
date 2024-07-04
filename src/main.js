@@ -8,6 +8,7 @@ dbConnect()
 .then(() => {
     app.listen(process.env.PORT, () => {
         createSchema();
+        console.log("just for testing purpose")
         console.log(`Server running on port ${process.env.PORT}`);
     });
 })
