@@ -4,8 +4,8 @@ const insertUser = async(user = {}) => {
     try {
         const conn = getConnection();
         const res = await conn.query(`
-            INSERT INTO users (username, email, first_name, last_name, password, profile) VALUES 
-            ("${user.username}", "${user.email}", "${user.first_name}", "${user.last_name}", "${user.password}", "${user.profile}");
+            INSERT INTO users (username, email, firstName, lastName, password, profileImg, sizeAllocated) VALUES 
+            ("${user.username}", "${user.email}", "${user.firstName}", "${user.lastName}", "${user.password}", "${user.profileImg}", ${user.sizeAllocated*1024*1024});
         `);
     } catch (error) {
         console.log(`Error while creating user : ${error}`);
@@ -33,7 +33,7 @@ const getFieldById = async (field, value) => {
         `);
         const user = res[0];
         delete user.password;
-        delete user.refresh_token;
+        delete user.refreshToken;
         return user;
     } catch (error) {
         console.log(`Error while fetching for login ${error}`);

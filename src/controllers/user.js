@@ -10,7 +10,7 @@ const {options} = require("../constants");
 const genrateToken = async (uid, user, email) => {
     const accessToken = genrateAccessToken(uid, user, email);
     const refreshToken = genrateRefreshToken(uid);
-    await updateValue("refresh_token", refreshToken, uid);
+    await updateValue("refreshToken", refreshToken, uid);
     return {accessToken, refreshToken};
 }
 
@@ -33,9 +33,12 @@ const register = asyncHandler(async (req, res) => {
     user.password = await bcrypt.hash(user.password, 10);
     const path = req.file?.path;
     if (path) {
-        user.profile = req.file.path.slice(7, req.file.path.length);
+        user.profileImg = req.file.path.slice(7, req.file.path.length);
     } else {
-        user.profile = "images/default.png"
+        user.profileImg = "images/default.png"
+    }
+    if (!user.sizeAllocated) {
+        user.sizeAllocated = 0
     }
     await insertUser(user);
     delete user.password;
@@ -69,7 +72,7 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logout = asyncHandler(async (req, res) => {
-    await updateValue("refresh_token", "NULL", req.user.id);
+    await updateValue("refreshToken", "NULL", req.user.id);
     return res.status(200)
             .clearCookie("accessToken", options)
             .clearCookie("refreshToken", options)
@@ -90,7 +93,7 @@ const loginRenew = asyncHandler(async (req, res) => {
         throw new ApiError(401, "login with invalid key");
     }
     const {accessToken, refreshToken} = await genrateToken(user.id, user.username, user.email);
-    delete user.refresh_token;
+    delete user.refreshToken;
     return res.status(201)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
