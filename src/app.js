@@ -24,7 +24,7 @@ const {router: otherRouter} =  require("./routes/other");
 const {router: videoRouter} = require("./routes/video");
 
 app.use("/api/v1/users", usersRouter);
-app.use("/api/v1/images", imageRouter);
+app.use("/api/v1/image", imageRouter);
 app.use("/api/v1/audio", audioRouter);
 app.use("/api/v1/other", otherRouter);
 app.use("/api/v1/video", videoRouter);

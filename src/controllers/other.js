@@ -4,12 +4,11 @@ const {otherCreate} = require("../db/other");
 
 const otherUpload = asyncHandler(async(req, res) => {
     let other = {};
-    console.log(req.file);
     other.url = req.file.path;
-    other.size = req.file.size;
+    other.size = req.file.size / 1024;
     other.title = req.file.filename;
     other.user = req.user.id;
-    other.extension = req.file.minetype;
+    other.extension = req.file.mimetype;
     await otherCreate(other);
     res.status(200).json(new ApiResponse(200, {}, "other file saved"));
 });

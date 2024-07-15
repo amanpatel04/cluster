@@ -8,7 +8,7 @@ const {
 const videoUpload = asyncHandler(async(req, res) => {
     let video = {};
     video.url = req.file.path;
-    video.size = req.file.size;
+    video.size = req.file.size / 1024;
     video.title = req.file.filename;
     video.user = req.user.id;
     video.poster = "image/default.jpg";

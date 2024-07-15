@@ -8,7 +8,7 @@ const {
 const audioUpload = asyncHandler(async(req, res) => {
     let audio = {};
     audio.url = req.file.path;
-    audio.size = req.file.size;
+    audio.size = req.file.size / 1024;
     audio.title = req.file.filename;
     audio.user = req.user.id;
     audio.duration = 60;

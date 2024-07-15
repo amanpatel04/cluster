@@ -9,6 +9,9 @@ const otherCreate = async(other = {}) => {
         const rel = await conn.query(`
             INSERT INTO user_others (user_id, file_id, extenstion) VALUES (${other.user}, ${res.insertId}, "${other.extension}");
         `);
+        const sizeUsed = await conn.query(`
+            UPDATE users SET sizeUsed = (SELECT sizeUsed from users where id = ${other.user}) + ${other.size};
+        `);
     } catch (error) {
         console.log(`Error while saving other : ${error}`);
     }

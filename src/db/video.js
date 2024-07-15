@@ -9,6 +9,9 @@ const videoCreate = async(video = {}) => {
         const rel = await conn.query(`
             INSERT INTO user_videos (user_id, file_id, poster, duration) VALUES (${video.user}, ${res.insertId}, "${video.poster}", ${video.duration});
         `);
+        const sizeUsed = await conn.query(`
+            UPDATE users SET sizeUsed = (SELECT sizeUsed from users where id = ${video.user}) + ${video.size};
+        `);
     } catch (error) {
         console.log(`Error while saving image : ${error}`);
     }

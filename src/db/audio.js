@@ -9,6 +9,9 @@ const audioCreate = async(audio = {}) => {
         const rel = await conn.query(`
             INSERT INTO user_audios (user_id, file_id, duration) VALUES (${audio.user}, ${res.insertId}, ${audio.duration});
         `);
+        const sizeUsed = await conn.query(`
+            UPDATE users SET sizeUsed = (SELECT sizeUsed from users where id = ${audio.user}) + ${audio.size};
+        `);
     } catch (error) {
         console.log(`Error while saving image : ${error}`);
     }

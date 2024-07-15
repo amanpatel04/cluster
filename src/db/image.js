@@ -9,6 +9,10 @@ const imageCreate = async(image = {}) => {
         const rel = await conn.query(`
             INSERT INTO user_images (user_id, file_id) VALUES (${image.user}, ${res.insertId});
         `);
+        const sizeUsed = await conn.query(`
+            UPDATE users SET sizeUsed = (SELECT sizeUsed from users where id = ${image.user}) + ${image.size};
+        `);
+        console.log(sizeUsed);
     } catch (error) {
         console.log(`Error while saving image : ${error}`);
     }
