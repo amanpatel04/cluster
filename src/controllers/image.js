@@ -5,7 +5,6 @@ const {imageCreate,
 } = require("../db/image");
 
 const imageUpload = asyncHandler(async(req, res) => {
-    console.log(req.user)
     let image = {};
     image.url = req.file.path;
     image.size = req.file.size / 1024;

@@ -122,5 +122,4 @@ dist
 # sql files
 
 *.sql
-public/images/
-public/asset/
+public/

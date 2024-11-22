@@ -1,23 +1,15 @@
-const mariadb = require('mariadb');
+const mongoose = require('mongoose')
 
-let conn;
 const dbConnect = async() => {
     try {
-        conn = await mariadb.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWD,
-            database: process.env.DB_NAME
-        });
-        console.log(`Database connection established : ${conn.threadId}, database : ${conn.info.database}`);
+		console.log(process.env.DB_URI)
+		const dbConnection = await mongoose.connect(`${process.env.DB_URI}`);
+		console.log(`Connected : ${dbConnection.connection.host}`);
     } catch (error) {
         console.log(`Databases connection error : ${error}`);
         process.exit(1);
     }
 }
 
-const getConnection = () => {
-    return conn;
-}
 
-module.exports = { dbConnect, getConnection };
+module.exports = { dbConnect };
