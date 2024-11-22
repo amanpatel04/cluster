@@ -1,52 +1,80 @@
+const {mongoose, Schema} = require("mongoose");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-const modelUsers = async(conn) => {
-    try {
-        const res = await conn.query(`
-        CREATE TABLE IF NOT EXISTS users (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            username VARCHAR(30) NOT NULL UNIQUE,
-            email VARCHAR(30) NOT NULL UNIQUE,
-            first_name VARCHAR(20) NOT NULL,
-            last_name VARCHAR(20),
-            profile VARCHAR(50) DEFAULT "default.jpg",
-            password VARCHAR(255) NOT NULL,
-            refresh_token VARCHAR(255),
-            size_allocated INT DEFAULT 0,
-            size_used INT DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) AUTO_INCREMENT=100001;
-        `);
-        console.log(`Table users created : ${res}`);
-    } catch (error) {
-        console.log(`Table user creation error : ${error}`);
+const userSchema = new Schema({
+    username : {
+        type: String,
+        unique: true,
+        required: true
+    },
+    email : {
+        type: String,
+        unique: true,
+        required: true
+    },
+    firstName : {
+        type: String
+    },
+    lastName : {
+        type: String
+    },
+    profileImg : {
+        type: String,
+        default: "images/default.png"
+    },
+    password : {
+        type: String,
+        required: true
+    },
+    refreshToken : {
+        type: String,
+        default: null
+    },
+    sizeAllocated : {
+        type: Number,
+        default: 0
+    },
+    sizeUsed : {
+        type: Number,
+        default: 0
     }
+}, {timestamps: true});
+
+userSchema.pre("save", async function(next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+})
+
+userSchema.methods.isPasswordCorrect = async function(password) {
+    return await bcrypt.compare(password, this.password);
 }
 
-const genrateAccessToken = (uid, user, em) => {
-    return jwt.sign(
-        {
-            _id: uid,
-            email: em,
-            username: user,
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        }
+userSchema.methods.genrateAccessToken = function() {
+    return jwt.sign({
+        _id: this._id,
+        email: this.email
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+    }
     )
 }
 
-const genrateRefreshToken = (uid) => {
-    return jwt.sign(
-        {
-            _id: uid,
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        }
+userSchema.methods.genrateRefreshToken = function() {
+    return jwt.sign({
+        _id: this._id
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+    }
     )
 }
 
-module.exports = { modelUsers, genrateAccessToken, genrateRefreshToken };
+const User = mongoose.model("User", userSchema);
+
+module.exports = { User };

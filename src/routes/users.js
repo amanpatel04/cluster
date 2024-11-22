@@ -1,20 +1,20 @@
 const {Router} = require("express");
-const {register,
+const {userRegister,
     login,
     logout,
     loginRenew,
-    get
+    getUser
     } = require("../controllers/user");
-const {upload} = require("../middlewares/multer");
+const { upload } = require("../middlewares/multer");
 const { auth } = require("../middlewares/auth");
 
 const router = Router();
 
-router.route("/register").post(upload.single("profileImg") ,register);
+router.route("/register").post(upload.single("profileImg") ,userRegister);
 router.route("/login").post(upload.none(), login);
 router.route("/logout").get(auth, logout);
 router.route("/renew").get(loginRenew);
-router.route("/get").get(auth, get);
+router.route("/get").get(auth, getUser);
 
 
 
