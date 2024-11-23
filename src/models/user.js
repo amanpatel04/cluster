@@ -38,7 +38,11 @@ const userSchema = new Schema({
     sizeUsed : {
         type: Number,
         default: 0
-    }
+    },
+    files : [{
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    }]
 }, {timestamps: true});
 
 userSchema.pre("save", async function(next) {

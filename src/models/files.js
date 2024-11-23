@@ -1,19 +1,32 @@
+const { mongoose, Schema } = require("mongoose");
 
-const modelFiles = async (conn) => {
-    try {
-        const res = await conn.query(`
-            CREATE TABLE IF NOT EXISTS files (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                url VARCHAR(100) NOT NULL UNIQUE,
-                title VARCHAR(50),
-                size INT NOT NULL,
-                file_type ENUM('image', 'video', 'audio', 'other') NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) AUTO_INCREMENT=101;
-        `);
-        console.log(`Table files created : ${res}`);
-    } catch (error) {
-        console.log(`Table files creation error : ${error}`);
+const fileSchema = new Schema({
+    url : {
+        type: String,
+        required: true,
+        unique: true
+    },
+    name : {
+        type: String,
+        required: true
+    },
+    size : {
+        type: Number
+    },
+    type : {
+        type: String,
+        enum : ["image", "video", "audio", "other"],
+        required: true,
+        default: "other"
     }
-}
+}, { timestamps: true });
 
-module.exports = { modelFiles };
+fileSchema.pre("save", async function(next) {
+    this.url = this.name;
+    console.log(this);
+    next();
+})
+
+const File = mongoose.model("File", fileSchema);
+
+module.exports = { File };

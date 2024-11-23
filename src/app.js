@@ -23,12 +23,14 @@ const {router: imageRouter} = require("./routes/image");
 const {router: audioRouter} = require("./routes/audio");
 const {router: otherRouter} =  require("./routes/other");
 const {router: videoRouter} = require("./routes/video");
+const {router: fileRouter} = require("./routes/file");
 
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/image", imageRouter);
 app.use("/api/v1/audio", audioRouter);
 app.use("/api/v1/other", otherRouter);
 app.use("/api/v1/video", videoRouter);
+app.use("/api/v1/file", fileRouter);
 
 
 module.exports = { app };
