@@ -1,31 +1,28 @@
 const { mongoose, Schema } = require("mongoose");
 
 const fileSchema = new Schema({
-    url : {
+    originalname : {
         type: String,
         required: true,
-        unique: true
     },
-    name : {
+    mimetype : {
+        type: String,
+        required: true
+    },
+    destination : {
+        type: String,
+    },
+    filename : {
+        type: String,
+    },
+    path : {
         type: String,
         required: true
     },
     size : {
         type: Number
-    },
-    type : {
-        type: String,
-        enum : ["image", "video", "audio", "other"],
-        required: true,
-        default: "other"
     }
 }, { timestamps: true });
-
-fileSchema.pre("save", async function(next) {
-    this.url = this.name;
-    console.log(this);
-    next();
-})
 
 const File = mongoose.model("File", fileSchema);
 

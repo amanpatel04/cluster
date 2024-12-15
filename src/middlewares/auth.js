@@ -9,7 +9,7 @@ const auth = asyncHandler(async(req, res, next) => {
         throw new ApiError(401, "invalid or not login");
     }
     const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    const user = await User.findById(decodeToken._id).select("-refreshToken -password");
+    const user = await User.findById(decodeToken._id).select("_id username email firstName lastName");
     if (!user) {
         throw new ApiError(410, "invalid token value");
     }

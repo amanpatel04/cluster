@@ -39,7 +39,19 @@ const userSchema = new Schema({
         type: Number,
         default: 0
     },
-    files : [{
+    images : [{
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    }],
+    audios : [{
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    }],
+    videos : [{
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    }],
+    others : [{
         type: Schema.Types.ObjectId,
         ref: 'File'
     }]
