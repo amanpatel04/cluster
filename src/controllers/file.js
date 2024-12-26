@@ -1,11 +1,11 @@
-const {ApiResponse} = require("../utils/ApiResponse");
-const {ApiError} = require("../utils/ApiError");
-const {asyncHandler} = require("../utils/asyncHandler");
+const { ApiResponse } = require("../utils/ApiResponse");
+const { ApiError } = require("../utils/ApiError");
+const { asyncHandler } = require("../utils/asyncHandler");
 const { removeFile } = require("../middlewares/removeFile");
 const { User } = require("../models/user");
 const { File } = require("../models/files");
 
-const uploadFile = asyncHandler( async (req, res) => {
+const uploadFile = asyncHandler(async (req, res) => {
     const clientFile = req.file;
     const clientUser = req.user;
     const file = await File.create(clientFile);
@@ -31,11 +31,11 @@ const uploadFile = asyncHandler( async (req, res) => {
     }
     await user.save();
     return res
-    .status(200)
-    .json(new ApiResponse(200, file, "File uploaded successfully"));
-})
+        .status(200)
+        .json(new ApiResponse(200, file, "File uploaded successfully"));
+});
 
-const deleteFile = asyncHandler( async (req, res) => {
+const deleteFile = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const clientUser = req.user;
     const file = await File.findById(id);
@@ -63,11 +63,11 @@ const deleteFile = asyncHandler( async (req, res) => {
     await File.findByIdAndDelete(id);
     removeFile(file.path);
     return res
-    .status(200)
-    .json(new ApiResponse(200, {}, "File deleted successfully"));
-})
+        .status(200)
+        .json(new ApiResponse(200, {}, "File deleted successfully"));
+});
 
 module.exports = {
     uploadFile,
-    deleteFile
-}
+    deleteFile,
+};
