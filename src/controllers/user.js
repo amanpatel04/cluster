@@ -52,7 +52,6 @@ const login = asyncHandler(async (req, res) => {
     }
     
     if (await user.isPasswordCorrect(client.password)) {
-        console.log(`${user.username} password is correct.`);
         const {accessToken, refreshToken} = await genrateToken(user._id);
         user = await User.findById(user._id).select("-password -refreshToken");
         return res.status(201)
