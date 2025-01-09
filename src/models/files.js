@@ -1,29 +1,32 @@
-const { mongoose, Schema } = require("mongoose");
+const { mongoose, Schema } = require('mongoose');
 
-const fileSchema = new Schema({
-    originalname : {
-        type: String,
-        required: true,
+const fileSchema = new Schema(
+  {
+    originalname: {
+      type: String,
+      required: true,
     },
-    mimetype : {
-        type: String,
-        required: true
+    mimetype: {
+      type: String,
+      required: true,
     },
-    destination : {
-        type: String,
+    destination: {
+      type: String,
     },
-    filename : {
-        type: String,
+    filename: {
+      type: String,
     },
-    path : {
-        type: String,
-        required: true
+    path: {
+      type: String,
+      required: true,
     },
-    size : {
-        type: Number
-    }
-}, { timestamps: true });
+    size: {
+      type: Number,
+    },
+  },
+  { timestamps: true },
+);
 
-const File = mongoose.model("File", fileSchema);
+const File = mongoose.model('File', fileSchema);
 
 module.exports = { File };
