@@ -7,7 +7,7 @@ const { auth } = require("../middlewares/auth");
 
 const router = Router();
 
-router.route("/get/:id").get(auth, get);
+router.route("/get").get(auth, get);
 
 module.exports = { router };
 

@@ -1,23 +1,32 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import makePostRequest from "../utils/postRequest.js";
-import { useDispatch } from "react-redux";
-import { login } from "../features/auth/auth";
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import makePostRequest from '../utils/postRequest.js';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/auth/auth';
+import makeGetRequest from '../utils/getRequest.js';
 
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+    useEffect(() => {
+        async function checkLogin() {
+            const response = await makeGetRequest('/users/get', true);
+            if (response != null) {
+                dispatch(login(response.data.user));
+                navigate('/');
+            }
+        }
+        checkLogin();
+    }, []);
     const loginUser = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const response = await makePostRequest("/users/login", formData, true);
+        const response = await makePostRequest('/users/login', formData, true);
         if (response != null) {
-            console.log(response);
             dispatch(login(response.data.user));
-            navigate("/");
+            navigate('/');
         } else {
-            console.log("Error : while login");
+            console.log('Error : while login');
         }
     };
 
@@ -58,20 +67,26 @@ const Login = () => {
                                     to="/forgotPassword"
                                     className="text-lg text-slate-300 hover:text-dark-white hover:underline"
                                 >
-                                    {" "}
-                                    Forgot Password{" "}
+                                    {' '}
+                                    Forgot Password{' '}
                                 </Link>
                             </div>
                             <button
                                 type="submit"
                                 className="bg-dark-lite w-28 h-12 basis-2/5 font-medium"
                             >
-                                {" "}
-                                Login{" "}
+                                {' '}
+                                Login{' '}
                             </button>
                         </div>
                     </form>
                 </div>
+            </div>
+            <div className="flex justify-center mt-3">
+                <p> Don't have an account? </p>
+                <Link to="/signup" className="hover:underline">
+                    Sign Up
+                </Link>
             </div>
         </>
     );

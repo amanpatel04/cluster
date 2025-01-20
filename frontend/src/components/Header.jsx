@@ -1,38 +1,43 @@
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import makeGetRequest from "../utils/getRequest";
-import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../features/auth/auth";
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import makeGetRequest from '../utils/getRequest';
+import { useDispatch } from 'react-redux';
+import { logout, login } from '../features/auth/auth';
 
 const Header = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
     useEffect(() => {
-        if (!isLoggedIn) {
-            navigate("/login");
+        async function checkLogin() {
+            const response = await makeGetRequest('/users/get', true);
+            if (response != null) {
+                dispatch(login(response.data.user));
+            } else {
+                navigate('/login');
+            }
         }
+        checkLogin();
     }, []);
 
     const logoutUser = async (event) => {
         event.preventDefault();
-        const response = await makeGetRequest("/users/logout", true);
+        const response = await makeGetRequest('/users/logout', true);
         if (response != null) {
             dispatch(logout());
-            navigate("/login");
+            navigate('/login');
         } else {
-            console.log("Error : while logout");
+            console.log('Error : while logout');
         }
     };
 
     const getUserData = async (event) => {
         event.preventDefault();
-        const response = await makeGetRequest("/users/get", true);
+        const response = await makeGetRequest('/users/get', true);
         if (response != null) {
             console.log(response);
         } else {
-            console.log("Error : while getting user data");
+            console.log('Error : while getting user data');
         }
     };
 
