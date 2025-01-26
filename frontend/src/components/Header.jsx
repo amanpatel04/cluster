@@ -12,7 +12,8 @@ const Header = () => {
         async function checkLogin() {
             const response = await makeGetRequest('/users/get', true);
             if (response != null) {
-                dispatch(login(response.data.user));
+                console.log(response);
+                dispatch(login(response.data));
             } else {
                 navigate('/login');
             }
@@ -43,7 +44,7 @@ const Header = () => {
 
     return (
         <>
-            <div className="w-full h-20 grid grid-cols-12 gap-1">
+            <div className="w-full h-16 grid grid-cols-12 gap-1">
                 <div className="flex justify-center items-center">
                     <h4 className="text-dark-white bg-dark-pink text-3xl font-poppins font-medium h-16 aspect-square rounded-full flex justify-center items-center hover:cursor-pointer">
                         NAS

@@ -1,9 +1,3 @@
-const { Router } = require("express");
+import { Router } from 'express';
 
-const { auth } = require("../middlewares/auth");
-
-const router = Router();
-
-// router.route("/upload").post(auth, upload.single("other"), otherUpload);
-
-module.exports = { router }
+export const router = Router();

@@ -1,9 +1,3 @@
-const { Router } = require("express");
+import { Router } from 'express';
 
-const { upload } = require("../middlewares/multer");
-const { auth } = require("../middlewares/auth");
-
-const router = Router();
-
-
-module.exports = { router }
+export const router = Router();

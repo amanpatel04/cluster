@@ -12,7 +12,7 @@ const Login = () => {
         async function checkLogin() {
             const response = await makeGetRequest('/users/get', true);
             if (response != null) {
-                dispatch(login(response.data.user));
+                dispatch(login(response.data));
                 navigate('/');
             }
         }

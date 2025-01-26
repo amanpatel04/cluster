@@ -1,9 +1,9 @@
-const fs = require('fs');
+import { unlink } from 'fs';
 
 const removeFile = (filePath) => {
-  fs.unlink(filePath, (err) => {
-    if (err) throw err;
-  });
+    unlink(filePath, (err) => {
+        if (err) throw err;
+    });
 };
 
-module.exports = { removeFile };
+export default removeFile;

@@ -1,7 +1,7 @@
-const { ApiError } = require('../utils/ApiError');
-const { asyncHandler } = require('../utils/asyncHandler');
-const { User } = require('../models/user');
-const jwt = require('jsonwebtoken');
+import ApiError from '../utils/ApiError.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import User from '../models/user.js';
+import jwt from 'jsonwebtoken';
 
 const auth = asyncHandler(async (req, res, next) => {
     const token =
@@ -21,4 +21,4 @@ const auth = asyncHandler(async (req, res, next) => {
     next();
 });
 
-module.exports = { auth };
+export default auth;

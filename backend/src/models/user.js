@@ -1,6 +1,6 @@
-const { mongoose, Schema } = require('mongoose');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+import mongoose, { Schema } from 'mongoose';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 const userSchema = new Schema(
     {
@@ -65,7 +65,7 @@ const userSchema = new Schema(
             },
         ],
     },
-    { timestamps: true },
+    { timestamps: true }
 );
 
 userSchema.pre('save', async function (next) {
@@ -88,7 +88,7 @@ userSchema.methods.genrateAccessToken = function () {
         process.env.ACCESS_TOKEN_SECRET,
         {
             expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
-        },
+        }
     );
 };
 
@@ -100,10 +100,10 @@ userSchema.methods.genrateRefreshToken = function () {
         process.env.REFRESH_TOKEN_SECRET,
         {
             expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
-        },
+        }
     );
 };
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = { User };
+export default User;

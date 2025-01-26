@@ -1,46 +1,47 @@
-const { ApiResponse } = require('../utils/ApiResponse');
-const { ApiError } = require('../utils/ApiError');
-const { asyncHandler } = require('../utils/asyncHandler');
-const { removeFile } = require('../middlewares/removeFile');
-const { User } = require('../models/user');
-const { File } = require('../models/files');
+import ApiResponse from '../utils/ApiResponse.js';
+import ApiError from '../utils/ApiError.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import removeFile from '../middlewares/removeFile.js';
+import File from '../models/files.js';
+import User from '../models/user.js';
 
-const uploadFile = asyncHandler(async (req, res) => {
-    const clientFiles = req.files;
+export const uploadFile = asyncHandler(async (req, res) => {
+    const clientFile = req.file;
     const clientUser = req.user;
     const user = await User.findById(clientUser._id);
-    for (const clinetFile of clientFiles) {
-        const file = await File.create(clinetFile);
-        if (!file) {
-            throw new ApiError(
-                400,
-                'Something went wrong while uploading file'
-            );
-        }
-        user.sizeUsed += file.size;
-        const fileType = file.mimetype.split('/')[0];
-        switch (fileType) {
-            case 'image':
-                user.images.push(file._id);
-                break;
-            case 'video':
-                user.videos.push(file._id);
-                break;
-            case 'audio':
-                user.audios.push(file._id);
-                break;
-            default:
-                user.others.push(file._id);
-                break;
-        }
+    const file = await File.create(clientFile);
+    if (!file) {
+        throw new ApiError(400, 'Something went wrong while uploading file');
+    }
+    user.sizeUsed += file.size;
+    const fileType = file.mimetype.split('/')[0];
+    switch (fileType) {
+        case 'image':
+            user.images.push(file._id);
+            break;
+        case 'video':
+            user.videos.push(file._id);
+            break;
+        case 'audio':
+            user.audios.push(file._id);
+            break;
+        default:
+            user.others.push(file._id);
+            break;
     }
     await user.save();
     return res
         .status(200)
-        .json(new ApiResponse(200, {files: clientFiles.length}, 'File uploaded successfully'));
+        .json(
+            new ApiResponse(
+                200,
+                { files: clientFile.filename },
+                'File uploaded successfully'
+            )
+        );
 });
 
-const deleteFile = asyncHandler(async (req, res) => {
+export const deleteFile = asyncHandler(async (req, res) => {
     const id = req.params.id;
     const clientUser = req.user;
     const file = await File.findById(id);
@@ -71,8 +72,3 @@ const deleteFile = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, {}, 'File deleted successfully'));
 });
-
-module.exports = {
-    uploadFile,
-    deleteFile,
-};

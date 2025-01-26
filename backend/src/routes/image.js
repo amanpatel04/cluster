@@ -1,13 +1,8 @@
-const { Router } = require("express");
+import { Router } from 'express';
 
-const { 
-    get
-} = require("../controllers/image");
-const { auth } = require("../middlewares/auth");
+import { get } from '../controllers/image.js';
+import auth from '../middlewares/auth.js';
 
-const router = Router();
+export const router = Router();
 
-router.route("/get").get(auth, get);
-
-module.exports = { router };
-
+router.route('/get').get(auth, get);

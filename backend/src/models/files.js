@@ -1,32 +1,32 @@
-const { mongoose, Schema } = require('mongoose');
+import mongoose, { Schema } from 'mongoose';
 
 const fileSchema = new Schema(
-  {
-    originalname: {
-      type: String,
-      required: true,
+    {
+        originalname: {
+            type: String,
+            required: true,
+        },
+        mimetype: {
+            type: String,
+            required: true,
+        },
+        destination: {
+            type: String,
+        },
+        filename: {
+            type: String,
+        },
+        path: {
+            type: String,
+            required: true,
+        },
+        size: {
+            type: Number,
+        },
     },
-    mimetype: {
-      type: String,
-      required: true,
-    },
-    destination: {
-      type: String,
-    },
-    filename: {
-      type: String,
-    },
-    path: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: Number,
-    },
-  },
-  { timestamps: true },
+    { timestamps: true }
 );
 
 const File = mongoose.model('File', fileSchema);
 
-module.exports = { File };
+export default File;

@@ -1,6 +1,6 @@
 const options = {
-  httpOnly: true,
-  secure: false,
+    httpOnly: true,
+    secure: false,
 };
 
-module.exports = { options };
+export default options;

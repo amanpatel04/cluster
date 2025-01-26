@@ -1,15 +1,14 @@
-require('dotenv').config();
-
-const { app } = require('./app');
-const { dbConnect } = require('./db/connect');
+import './utils/loadEnv.js';
+import app from './app.js';
+import dbConnect from './db/connect.js';
 
 dbConnect()
-  .then(() => {
-    app.listen(process.env.PORT, () => {
-      console.log(`Server running on port ${process.env.PORT}`);
+    .then(() => {
+        app.listen(process.env.PORT, () => {
+            console.log(`Server running on port ${process.env.PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.log(`Database connection error : ${error}`);
+        process.exit(1);
     });
-  })
-  .catch((error) => {
-    console.log(`Database connection error : ${error}`);
-    process.exit(1);
-  });

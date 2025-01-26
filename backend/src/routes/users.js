@@ -1,20 +1,18 @@
-const { Router } = require('express');
-const {
-  userRegister,
-  login,
-  logout,
-  loginRenew,
-  getUser,
-} = require('../controllers/user');
-const { upload } = require('../middlewares/multer');
-const { auth } = require('../middlewares/auth');
+import { Router } from 'express';
+import {
+    userRegister,
+    login,
+    logout,
+    loginRenew,
+    getUser,
+} from '../controllers/user.js';
+import upload from '../middlewares/multer.js';
+import auth from '../middlewares/auth.js';
 
-const router = Router();
+export const router = Router();
 
 router.route('/register').post(upload.single('profileImg'), userRegister);
 router.route('/login').post(upload.none(), login);
 router.route('/logout').get(auth, logout);
 router.route('/renew').get(loginRenew);
 router.route('/get').get(auth, getUser);
-
-module.exports = { router };

@@ -1,8 +1,8 @@
-const { asyncHandler } = require('../utils/asyncHandler');
-const { ApiResponse } = require('../utils/ApiResponse');
-const { ApiError } = require('../utils/ApiError');
-const { User } = require('../models/user');
-const { options } = require('../constants');
+import asyncHandler from '../utils/asyncHandler.js';
+import ApiResponse from '../utils/ApiResponse.js';
+import ApiError from '../utils/ApiError.js';
+import User from '../models/user.js';
+import options from '../constants.js';
 
 const genrateToken = async (_id) => {
     try {
@@ -17,7 +17,7 @@ const genrateToken = async (_id) => {
     }
 };
 
-const userRegister = asyncHandler(async (req, res) => {
+export const userRegister = asyncHandler(async (req, res) => {
     const user = req.body;
     for (const field in user) {
         if (user[field].trim() === '') {
@@ -34,11 +34,11 @@ const userRegister = asyncHandler(async (req, res) => {
 
     delete newUser.password;
     res.status(201).json(
-        new ApiResponse(200, newUser, 'User registered successfully'),
+        new ApiResponse(200, newUser, 'User registered successfully')
     );
 });
 
-const login = asyncHandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
     const client = req.body;
     for (const field in client) {
         if (client[field].trim() === '') {
@@ -62,15 +62,15 @@ const login = asyncHandler(async (req, res) => {
                 new ApiResponse(
                     200,
                     { user: user, accessToken, refreshToken },
-                    'user login successful',
-                ),
+                    'user login successful'
+                )
             );
     }
 
     throw new ApiError(400, 'Password did not matched try again');
 });
 
-const logout = asyncHandler(async (req, res) => {
+export const logout = asyncHandler(async (req, res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -80,7 +80,7 @@ const logout = asyncHandler(async (req, res) => {
         },
         {
             new: true,
-        },
+        }
     );
 
     return res
@@ -90,7 +90,7 @@ const logout = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, 'User logged Out'));
 });
 
-const loginRenew = asyncHandler(async (req, res) => {
+export const loginRenew = asyncHandler(async (req, res) => {
     const token =
         req.cookies?.refreshToken ||
         req.header('Authorization')?.replace('Bearer ', '');
@@ -115,18 +115,16 @@ const loginRenew = asyncHandler(async (req, res) => {
             new ApiResponse(
                 200,
                 { user: user, accessToken, refreshToken },
-                'login successful',
-            ),
+                'login successful'
+            )
         );
 });
 
-const getUser = asyncHandler(async (req, res) => {
+export const getUser = asyncHandler(async (req, res) => {
     const user = req.user;
     return res
         .status(200)
         .json(
-            new ApiResponse(200, user, `record of user with id : ${user.id}`),
+            new ApiResponse(200, user, `record of user with id : ${user.id}`)
         );
 });
-
-module.exports = { userRegister, login, logout, loginRenew, getUser };

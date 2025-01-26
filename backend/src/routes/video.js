@@ -1,9 +1,5 @@
-const {Router} = require("express");
+import { Router } from 'express';
 
-const {auth} = require("../middlewares/auth");
+import auth from '../middlewares/auth.js';
 
-
-const router = Router();
-
-
-module.exports = { router };
+export const router = Router();
