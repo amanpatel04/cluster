@@ -26,8 +26,8 @@ import { router as otherRouter } from './routes/other.js';
 import { router as videoRouter } from './routes/video.js';
 import { router as fileRouter } from './routes/file.js';
 
-app.use('/api/v1/users', usersRouter);
-app.use('/api/v1/images', imageRouter);
+app.use('/api/v1/user', usersRouter);
+app.use('/api/v1/image', imageRouter);
 app.use('/api/v1/audio', audioRouter);
 app.use('/api/v1/other', otherRouter);
 app.use('/api/v1/video', videoRouter);
