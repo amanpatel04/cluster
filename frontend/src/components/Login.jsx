@@ -10,7 +10,7 @@ const Login = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         async function checkLogin() {
-            const response = await makeGetRequest('/users/get', true);
+            const response = await makeGetRequest('/user/get', true);
             if (response != null) {
                 dispatch(login(response.data));
                 navigate('/');
@@ -21,7 +21,7 @@ const Login = () => {
     const loginUser = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const response = await makePostRequest('/users/login', formData, true);
+        const response = await makePostRequest('/user/login', formData, true);
         if (response != null) {
             dispatch(login(response.data.user));
             navigate('/');

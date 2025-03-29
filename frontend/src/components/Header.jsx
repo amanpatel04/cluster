@@ -10,7 +10,7 @@ const Header = () => {
 
     useEffect(() => {
         async function checkLogin() {
-            const response = await makeGetRequest('/users/get', true);
+            const response = await makeGetRequest('/user/get', true);
             if (response != null) {
                 console.log(response);
                 dispatch(login(response.data));
@@ -23,7 +23,7 @@ const Header = () => {
 
     const logoutUser = async (event) => {
         event.preventDefault();
-        const response = await makeGetRequest('/users/logout', true);
+        const response = await makeGetRequest('/user/logout', true);
         if (response != null) {
             dispatch(logout());
             navigate('/login');
@@ -34,7 +34,7 @@ const Header = () => {
 
     const getUserData = async (event) => {
         event.preventDefault();
-        const response = await makeGetRequest('/users/get', true);
+        const response = await makeGetRequest('/user/get', true);
         if (response != null) {
             console.log(response);
         } else {
