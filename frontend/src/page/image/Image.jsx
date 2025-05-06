@@ -17,13 +17,26 @@ const Image = () => {
         getImages();
     }, []);
 
+    const FullImage = (event) => {
+        const element = event.target;
+        if (document.fullscreenElement) {
+            element.classList.add("object-cover");
+            document.exitFullscreen();
+        } else {
+            element.classList.remove("object-cover");
+            element.requestFullscreen();
+        }
+    };
+
     const ImageList = images.map((image, index) => {
         return (
-            <div className="image aspect-square overflow-hidden" key={index}>
+            <div className="image overflow-hidden h-48 hover:cursor-pointer" key={index}>
                 <img
-                    src={`localhost:8000/${image.path.substr(7)}`}
-                    alt=""
+                    className="h-full w-full object-cover"
+                    src={"http://localhost:8000/" + image.path.substr(7)}
+                    alt={image.filename}
                     srcSet=""
+                    onClick={(event) => FullImage(event)}
                 />
             </div>
         );
@@ -31,7 +44,6 @@ const Image = () => {
 
     return (
         <>
-            <Header />
             <Sidebar />
             <div className="container relative left-12 top-2 grid grid-cols-4 gap-2 p-2">
                 {ImageList}

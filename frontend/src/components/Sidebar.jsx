@@ -9,7 +9,7 @@ import { IoCloudUploadOutline } from "react-icons/io5";
 const Sidebar = () => {
   return (
     <>
-      <div className="w-12 h-max fixed top-[calc(50vh-12rem)] overflow-hidden hidden md:block">
+      <div className="w-12 h-max fixed top-20 overflow-hidden hidden md:block">
         <ul className="h-full grid gap-2">
           <Link
             to="/menu"
