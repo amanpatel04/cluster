@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import makeGetRequest from '../../utils/getRequest';
 import Sidebar from '../../components/Sidebar';
@@ -6,8 +6,8 @@ import { FaPlay } from 'react-icons/fa';
 import { IoIosPause } from 'react-icons/io';
 
 const Audio = () => {
-    const [audios, setAudios] = React.useState([]);
-    const [isPlaying, setIsPlaying] = React.useState(-1);
+    const [audios, setAudios] = useState([]);
+    const [isPlaying, setIsPlaying] = useState(-1);
     const audioPlayer = useRef(null);
     useEffect(() => {
         async function getAudios() {

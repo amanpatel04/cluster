@@ -20,14 +20,14 @@ export const getVideoByPage = asyncHandler(async (req, res) => {
                 localField: 'videos',
                 foreignField: '_id',
                 as: 'videosList',
-                pipeline: [
-                    {
-                        $skip: (page - 1) * 10,
-                    },
-                    {
-                        $limit: 10,
-                    },
-                ],
+                // pipeline: [
+                //     {
+                //         $skip: (page - 1) * 10,
+                //     },
+                //     {
+                //         $limit: 10,
+                //     },
+                // ],
             },
         },
         {

@@ -20,14 +20,14 @@ export const getOtherByPage = asyncHandler(async (req, res) => {
                 localField: 'others',
                 foreignField: '_id',
                 as: 'othersList',
-                pipeline: [
-                    {
-                        $skip: (page - 1) * 10,
-                    },
-                    {
-                        $limit: 10,
-                    },
-                ],
+                // pipeline: [
+                //     {
+                //         $skip: (page - 1) * 10,
+                //     },
+                //     {
+                //         $limit: 10,
+                //     },
+                // ],
             },
         },
         {
@@ -36,7 +36,6 @@ export const getOtherByPage = asyncHandler(async (req, res) => {
             },
         },
     ]);
-    console.log(otherFiles);
     return res
         .status(200)
         .json(

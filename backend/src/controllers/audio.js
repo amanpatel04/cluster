@@ -20,14 +20,14 @@ export const getAudioByPage = asyncHandler(async (req, res) => {
                 localField: 'audios',
                 foreignField: '_id',
                 as: 'audiosList',
-                pipeline: [
-                    {
-                        $skip: (page - 1) * 10,
-                    },
-                    {
-                        $limit: 10,
-                    },
-                ],
+                // pipeline: [
+                //     {
+                //         $skip: (page - 1) * 10,
+                //     },
+                //     {
+                //         $limit: 10,
+                //     },
+                // ],
             },
         },
         {
