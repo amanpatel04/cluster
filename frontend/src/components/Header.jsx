@@ -1,25 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import makeGetRequest from '../utils/getRequest';
 import { useDispatch } from 'react-redux';
-import { logout, login } from '../features/auth/auth';
+import { logout } from '../features/auth/auth';
 
 const Header = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        async function checkLogin() {
-            const response = await makeGetRequest('/user/get', true);
-            if (response != null) {
-                console.log(response);
-                dispatch(login(response.data));
-            } else {
-                navigate('/login');
-            }
-        }
-        checkLogin();
-    }, []);
 
     const logoutUser = async (event) => {
         event.preventDefault();
@@ -29,16 +17,6 @@ const Header = () => {
             navigate('/login');
         } else {
             console.log('Error : while logout');
-        }
-    };
-
-    const getUserData = async (event) => {
-        event.preventDefault();
-        const response = await makeGetRequest('/user/get', true);
-        if (response != null) {
-            console.log(response);
-        } else {
-            console.log('Error : while getting user data');
         }
     };
 
@@ -54,7 +32,7 @@ const Header = () => {
                     <div className="flex gap-2 h-full items-center p-3 text-dark-white font-poppins text-xl"></div>
                 </div>
                 <div className="col-span-2 grid grid-cols-2 gap-1">
-                    <Link to="/profile" onClick={getUserData}>
+                    <Link to="/profile">
                         <i className="fa-regular fa-user flex justify-center items-center h-full text-4xl text-dark-white hover:cursor-pointer hover:bg-dark-lite"></i>
                     </Link>
                     <Link to="/logout" onClick={logoutUser}>

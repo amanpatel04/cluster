@@ -1,23 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import makePostRequest from '../utils/postRequest.js';
 import { useDispatch } from 'react-redux';
 import { login } from '../features/auth/auth';
-import makeGetRequest from '../utils/getRequest.js';
 
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    useEffect(() => {
-        async function checkLogin() {
-            const response = await makeGetRequest('/user/get', true);
-            if (response != null) {
-                dispatch(login(response.data));
-                navigate('/');
-            }
-        }
-        checkLogin();
-    }, []);
+    
     const loginUser = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);

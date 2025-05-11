@@ -6,7 +6,7 @@ const fileUpload = (url, formData) => {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', `api${url}`, true);
         xhr.onload = () => {
-            if (xhr.status == 200 || xhr.status == 201) {
+            if (xhr.status === 200 || xhr.status === 201) {
                 const data = JSON.parse(xhr.response);
                 store.dispatch(setProgress(0));
                 resolve(data);

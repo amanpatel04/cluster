@@ -3,7 +3,7 @@ const makeGetRequest = async (url, auth) => {
         method: 'GET',
         credentials: auth ? 'include' : 'omit',
     });
-    if (response.status == 200) {
+    if (response.status === 200) {
         const data = await response.json();
         return data;
     } else {

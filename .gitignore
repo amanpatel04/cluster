@@ -123,3 +123,9 @@ dist
 
 *.sql
 
+# media files
+*.mp4
+*.mp3
+*.plg
+*.jpeg 
+*.pdf

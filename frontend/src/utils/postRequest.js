@@ -4,7 +4,7 @@ const makePostRequest = async (url, formData, auth) => {
         credentials: auth ? 'include' : 'omit',
         body: formData,
     });
-    if (response.status == 200 || response.status == 201) {
+    if (response.status === 200 || response.status === 201) {
         const data = await response.json();
         return data;
     } else {
