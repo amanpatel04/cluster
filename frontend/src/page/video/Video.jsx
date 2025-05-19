@@ -34,7 +34,7 @@ const Video = () => {
 
   return (
     <>
-        <div className='container relative left-12 top-2 grid grid-cols-4 gap-2 p-3'>
+        <div className='m-2 shadow-md grid grid-cols-1 gap-2 md:grid-cols-3 lg:grid-cols-4'>
             {VideoList}
         </div>
         <Sidebar />

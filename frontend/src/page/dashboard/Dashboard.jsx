@@ -5,13 +5,12 @@ import Sidebar from '../../components/Sidebar';
 import UserInfo from '../../components/UserInfo';
 
 const Dashboard = () => {
-    return (
-        <>
-            <Header />
-            <UserInfo />
-            <Sidebar />
-        </>
-    );
+  return (
+    <>
+      <UserInfo />
+      <Sidebar />
+    </>
+  );
 };
 
 export default Dashboard;

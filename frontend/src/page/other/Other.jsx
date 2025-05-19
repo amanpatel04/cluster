@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 
 import Sidebar from '../../components/Sidebar';
 import makeGetRequest from '../../utils/getRequest';
+import { MdOutlineDownload } from 'react-icons/md';
 
 const Other = () => {
-    const [files, setFiles] = React.useState([]);
+    const [files, setFiles] = useState([]);
 
     useEffect(() => {
         const fetchFiles = async () => {
@@ -20,28 +21,30 @@ const Other = () => {
 
     const fileList = files.map((file, index) => {
         return (
-            <tr className="h-10 border-t border-white" key={index}>
-                <td className="px-3">{file.filename}</td>
-                <td className="px-3">{file.mimetype}</td>
-                <td className="px-3"><Link to={"http://localhost:8000/" + file.path.substr(7)} target={"_blank"} download={file.filename} className='bg-green-500 w-32 h-8 flex justify-center items-center rounded text-white text-xl font-medium'>Download</Link></td>
+            <tr className="h-10 border-t border-green-500" key={index}>
+                <td className="p-1">{file.filename.length > 25 ? file.filename.substr(0, 25) + '...' : file.filename}</td>
+                <td className="p-1">{file.mimetype.substr(-3, 3)}</td>
+                <td className="p-1"><Link to={file.path.substr(7)} target={"_blank"} download={file.filename} className='bg-green-500 aspect-square h-8 flex justify-center items-center rounded text-white text-xl font-medium'>
+                <MdOutlineDownload />
+                </Link></td>
             </tr>
         );
     });
 
     return (
         <>
-            <div className="container relative left-12 top-24 px-24">
+            <div className="m-2 md:w-1/2 md:mx-auto md:shadow-lg">
                 <table className="w-full table-fixed">
                     <colgroup>
                         <col span="1" className="w-4/6" />
                         <col span="1" className="w-1/6" />
                         <col span="1" className="w-1/6" />
                     </colgroup>
-                    <thead className="h-10 bg-slate-900">
-                        <tr>
-                            <th className="text-left px-3">Name</th>
-                            <th className="text-left px-3">Type</th>
-                            <th className="text-left px-3">Download</th>
+                    <thead className="h-10 bg-green-500">
+                        <tr className='text-white'>
+                            <th className="text-left px-1">Name</th>
+                            <th className="text-left px-1">Type</th>
+                            <th className="text-left px-1"></th>
                         </tr>
                     </thead>
                     <tbody>

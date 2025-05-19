@@ -1,160 +1,183 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import makePostRequest from '../utils/postRequest';
 
 const Signup = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [errorText, setErrorText] = useState('');
+  const errorElement = useRef(null);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        if (formData.get('password') === formData.get('confirmPassword')) {
-            const response = await makePostRequest(
-                '/user/register/',
-                formData,
-                false
-            );
-            if (response != null) {
-                navigate('/login');
-            }
-        } else {
-            alert('Password does not match');
-        }
-    };
+  const validateForm = (formData) => {
+    const element = errorElement.current;
+    if (formData.get('firstName') === '') {
+      setErrorText('First Name is required');
+      element.classList.remove('hidden');
+      return false;
+    }
+    if (formData.get('password').length < 8) {
+      setErrorText('Password must be at least 8 characters long');
+      element.classList.remove('hidden');
+      return false;
+    }
+    if (formData.get('password') !== formData.get('confirmPassword')) {
+      setErrorText('Passwords do not match');
+      element.classList.remove('hidden');
+      return false;
+    }
+    return true;
+  };
 
-    return (
-        <>
-            <div className="text-dark-white m-2 md:w-2/5 md:mx-auto mt-4 md:border md:p-3 md:rounded-lg">
-                <div className="flex justify-center">
-                    <h1 className="text-xl font-poppins font-semibold md:text-3xl">
-                        Signup
-                    </h1>
-                </div>
-                <div>
-                    <form
-                        method="post"
-                        encType="multipart/form-data"
-                        className="flex flex-col gap-2 mt-4"
-                        onSubmit={(event) => handleSubmit(event)}
-                    >
-                        <div className="flex justify-end items-center h-20">
-                            <label
-                                htmlFor="profileImg"
-                                className="w-20 h-20 bg-dark-lite rounded-full hover:cursor-pointer flex justify-center items-center text-3xl"
-                            >
-                                {' '}
-                                <i className="fa-regular fa-image"></i>{' '}
-                            </label>
-                            <input
-                                type="file"
-                                id="profileImg"
-                                name="profileImg"
-                                accept="image/*"
-                                className="hidden"
-                            />
-                        </div>
-                        <label
-                            htmlFor="firstName"
-                            className="text-dark-white font-poppins font-normal"
-                        >
-                            {' '}
-                            First Name{' '}
-                        </label>
-                        <input
-                            type="text"
-                            name="firstName"
-                            className="bg-dark-black border-b focus:outline-none text-lg font-medium font-poppins"
-                        />
-                        <label
-                            htmlFor="lastName"
-                            className="text-dark-white font-poppins font-normal"
-                        >
-                            {' '}
-                            Last Name{' '}
-                        </label>
-                        <input
-                            type="text"
-                            name="lastName"
-                            className="bg-dark-black border-b focus:outline-none text-lg font-medium font-poppins"
-                        />
-                        <label
-                            htmlFor="username"
-                            className="text-dark-white font-poppins font-normal"
-                        >
-                            {' '}
-                            Username{' '}
-                        </label>
-                        <input
-                            type="text"
-                            name="username"
-                            className="bg-dark-black border-b focus:outline-none text-lg font-medium font-poppins"
-                        />
-                        <label
-                            htmlFor="email"
-                            className="text-dark-white font-poppins font-normal"
-                        >
-                            {' '}
-                            Email{' '}
-                        </label>
-                        <input
-                            type="email"
-                            name="email"
-                            className="bg-dark-black border-b focus:outline-none text-lg font-medium font-poppins"
-                        />
-                        <label
-                            htmlFor="plan"
-                            className="text-dark-white font-poppins font-normal"
-                        >
-                            {' '}
-                            Select Plan{' '}
-                        </label>
-                        <select
-                            name="plan"
-                            className="bg-dark-black border-b text-lg font-medium font-poppins "
-                        >
-                            <option value="free"> Free </option>
-                            <option value="pro"> Pro </option>
-                            <option value="premium"> Premium </option>
-                        </select>
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    if (validateForm(formData)) {
+      const response = await makePostRequest(
+        '/user/register/',
+        formData,
+        false
+      );
+      if (response !== null) {
+        navigate('/login');
+      } else {
+        const element = errorElement.current;
+        setErrorText('Something went wrong');
+        element.classList.remove('hidden');
+      }
+    }
+  };
 
-                        <label
-                            htmlFor="password"
-                            className="text-dark-white font-poppins font-normal"
-                        >
-                            {' '}
-                            Password{' '}
-                        </label>
-                        <input
-                            type="password"
-                            name="password"
-                            className="bg-dark-black border-b focus:outline-none text-lg font-medium font-poppins"
-                        />
-                        <label
-                            htmlFor="confirmPassword"
-                            className="text-dark-white font-poppins font-normal"
-                        >
-                            {' '}
-                            Confirm Password{' '}
-                        </label>
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                            className="bg-dark-black border-b focus:outline-none text-lg font-medium font-poppins"
-                        />
-                        <div className="flex justify-center mt-10 ">
-                            <button
-                                type="submit"
-                                className="text-dark-white bg-dark-lite w-28 h-12 font-poppins font-medium"
-                            >
-                                Signup
-                            </button>
-                        </div>
-                    </form>
-                </div>
+  const handleChange = () => {
+    const element = errorElement.current;
+    if (element.classList.contains('hidden')) return;
+    element.classList.add('hidden');
+  };
+
+  const handleUsername = (event) => {
+    const element = errorElement.current;
+    const username = event.target.value;
+    if (username.length < 3) {
+      setErrorText('Username already taken');
+      element.classList.remove('hidden');
+    } else {
+      setErrorText('');
+      if (!element.classList.contains('hidden')) {
+        element.classList.add('hidden');
+      }
+    }
+  };
+
+  return (
+    <>
+      <div className="p-2 mt-20 bg-green-50 md:w-1/3 md:mx-auto md:mt-4">
+        <div className="flex justify-center">
+          <h1 className="text-2xl font-medium text-green-500">Signup</h1>
+        </div>
+        <div>
+          <form
+            method="post"
+            encType="multipart/form-data"
+            className="flex flex-col gap-2 mt-4"
+            onSubmit={(event) => handleSubmit(event)}
+            onFocus={handleChange}
+          >
+            <div className="flex justify-end items-center h-20">
+              <label
+                htmlFor="profileImg"
+                className="w-20 h-20 rounded-full hover:cursor-pointer flex justify-center items-center text-3xl bg-green-500 text-slate-100"
+              >
+                {' '}
+                <i className="fa-regular fa-image"></i>{' '}
+              </label>
+              <input
+                type="file"
+                id="profileImg"
+                name="profileImg"
+                accept="image/*"
+                className="hidden"
+              />
             </div>
-        </>
-    );
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                className="focus:outline-none text-lg border rounded h-10 px-2"
+              />
+
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                className="focus:outline-none text-lg border rounded h-10 px-2"
+              />
+            </div>
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+              className="focus:outline-none text-lg border rounded h-10 px-2"
+            />
+
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              required
+              onChange={handleUsername}
+              className="focus:outline-none text-lg border rounded h-10 px-2"
+            />
+
+            <select name="plan" className="border text-lg h-10 rounded px-2">
+              <option value="free"> Free </option>
+              <option value="pro"> Pro </option>
+              <option value="premium"> Premium </option>
+            </select>
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              className="focus:outline-none text-lg border rounded h-10 px-2"
+            />
+
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              required
+              className="focus:outline-none text-lg border rounded h-10 px-2"
+            />
+            <div className="h-8">
+              <p
+                className="text-red-400 text-right px-2 hidden"
+                ref={errorElement}
+              >
+                {errorText}
+              </p>
+            </div>
+            <div className="flex justify-center ">
+              <button
+                type="submit"
+                className="text-white bg-green-500 w-28 h-12 font-poppins font-medium rounded mb-3"
+              >
+                Signup
+              </button>
+            </div>
+            <div className="text-center">
+              Already have an account?
+              <Link to="/login" className="text-indigo-400 underline">
+                Login
+              </Link>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Signup;

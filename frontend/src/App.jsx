@@ -13,6 +13,7 @@ import Image from './page/image/Image.jsx';
 import Audio from './page/audio/Audio.jsx';
 import Video from './page/video/Video.jsx';
 import Other from './page/other/Other.jsx';
+import Logout from './components/Logout.jsx';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="/video/:id" element={<VideoPlayer />} />
             <Route path="/other" element={<Other />} />
             <Route path="/upload" element={<Upload />} />
+            <Route path="/logout" element={<Logout />} />
           </Route>
         </Routes>
       </BrowserRouter>

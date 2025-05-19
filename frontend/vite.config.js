@@ -7,10 +7,15 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000/api/v1', // Replace with your API's URL
+        target: 'http://192.168.228.39:8000/api/', // Replace with your API's URL
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/files': {
+        target: 'http://192.168.228.39:8000/files/', // Replace with your API's URL
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/files/, ''),
+      }
     },
   },
 
