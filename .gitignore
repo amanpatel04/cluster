@@ -123,6 +123,8 @@ dist
 
 *.sql
 
+backend/public/
+
 # media files
 *.mp4
 *.mp3

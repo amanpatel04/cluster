@@ -24,8 +24,7 @@ export const userRegister = asyncHandler(async (req, res) => {
             throw new ApiError(400, `${field} cannot be empty`);
         }
     }
-    user.username = user.username.toLowerCase();
-    user.email = user.email.toLowerCase();
+    user.email = user.email.toLowerCase(); 
 
     const newUser = await User.create(req.body);
     if (!newUser) {
@@ -121,10 +120,10 @@ export const loginRenew = asyncHandler(async (req, res) => {
 });
 
 export const getUser = asyncHandler(async (req, res) => {
-    const user = req.user;
+    const user = await User.findById(req.user._id).select('-password -refreshToken');
     return res
         .status(200)
         .json(
-            new ApiResponse(200, user, `record of user with id : ${user.id}`)
+            new ApiResponse(200, user, `record of user with id : ${user._id}`)
         );
 });

@@ -1,5 +1,5 @@
 const makeGetRequest = async (url, auth) => {
-    const response = await fetch(`/api/v1/${url}`, {
+    const response = await fetch(`/api/v1${url}`, {
         method: 'GET',
         credentials: auth ? 'include' : 'omit',
     });

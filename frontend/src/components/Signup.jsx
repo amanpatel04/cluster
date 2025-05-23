@@ -53,20 +53,6 @@ const Signup = () => {
     element.classList.add('hidden');
   };
 
-  const handleUsername = (event) => {
-    const element = errorElement.current;
-    const username = event.target.value;
-    if (username.length < 3) {
-      setErrorText('Username already taken');
-      element.classList.remove('hidden');
-    } else {
-      setErrorText('');
-      if (!element.classList.contains('hidden')) {
-        element.classList.add('hidden');
-      }
-    }
-  };
-
   return (
     <>
       <div className="p-2 mt-20 bg-green-50 md:w-1/3 md:mx-auto md:mt-4">
@@ -120,21 +106,6 @@ const Signup = () => {
               required
               className="focus:outline-none text-lg border rounded h-10 px-2"
             />
-
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              required
-              onChange={handleUsername}
-              className="focus:outline-none text-lg border rounded h-10 px-2"
-            />
-
-            <select name="plan" className="border text-lg h-10 rounded px-2">
-              <option value="free"> Free </option>
-              <option value="pro"> Pro </option>
-              <option value="premium"> Premium </option>
-            </select>
 
             <input
               type="password"
