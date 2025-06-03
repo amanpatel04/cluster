@@ -1,5 +1,5 @@
 const makePostRequest = async (url, formData, auth) => {
-    const response = await fetch(`/api/v1/${url}`, {
+    const response = await fetch(`/api/v1${url}`, {
         method: 'POST',
         credentials: auth ? 'include' : 'omit',
         body: formData,

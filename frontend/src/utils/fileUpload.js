@@ -4,7 +4,7 @@ import { store } from '../state/store';
 const fileUpload = (url, formData) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', `/api/v1/${url}`, true);
+        xhr.open('POST', `/api/v1${url}`, true);
         xhr.onload = () => {
             if (xhr.status === 200 || xhr.status === 201) {
                 const data = JSON.parse(xhr.response);

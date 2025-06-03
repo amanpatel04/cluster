@@ -12,7 +12,7 @@ const VideoPlayer = () => {
             const response = await makeGetRequest(`/video/get/${id}`, true);
             
             if (response !== null) {
-                myVideoRef.current.src = "http://localhost:8000/" + response.data.path.substr(7);
+                myVideoRef.current.src = response.data.path.substr(6);
                 myVideoRef.current.load();
             }
         }

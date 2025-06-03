@@ -25,7 +25,6 @@ export const userRegister = asyncHandler(async (req, res) => {
         }
     }
     user.email = user.email.toLowerCase(); 
-
     const newUser = await User.create(req.body);
     if (!newUser) {
         throw new ApiError(400, 'Something went wrong while creating user');

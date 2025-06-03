@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import makeGetRequest from '../../utils/getRequest';
 import makeDeleteRequest from '../../utils/delelteRequest';
@@ -10,7 +10,6 @@ const Image = () => {
     useEffect(() => {
         async function getImages() {
             const response = await makeGetRequest('/image/get', true);
-            console.log(response);
             if (response != null) {
                 setImages(response.data);
             }

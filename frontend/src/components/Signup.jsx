@@ -32,6 +32,7 @@ const Signup = () => {
     event.preventDefault();
     const formData = new FormData(event.target);
     if (validateForm(formData)) {
+      formData.delete('confirmPassword');
       const response = await makePostRequest(
         '/user/register/',
         formData,
