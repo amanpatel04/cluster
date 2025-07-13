@@ -2,6 +2,8 @@ import './utils/loadEnv.js';
 import app from './app.js';
 import dbConnect from './db/connect.js';
 
+// This is only for testing
+
 dbConnect()
     .then(() => {
         app.listen(process.env.PORT, () => {
