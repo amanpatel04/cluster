@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import makeGetRequest from '../../utils/getRequest';
+import { useApiCall } from '../../utils/UseApiCall';
 import makeDeleteRequest from '../../utils/delelteRequest';
 import Sidebar from '../../components/Sidebar';
 import { MdOutlineDelete } from 'react-icons/md';
@@ -9,7 +9,7 @@ const Image = () => {
     const [images, setImages] = useState([]);
     useEffect(() => {
         async function getImages() {
-            const response = await makeGetRequest('/image/get', true);
+            const response = await useApiCall('/image/get', true);
             if (response != null) {
                 setImages(response.data);
             }

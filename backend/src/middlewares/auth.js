@@ -8,17 +8,21 @@ const auth = asyncHandler(async (req, res, next) => {
         req.cookies?.accessToken ||
         req.header('Authorization')?.replace('Bearer ', '');
     if (!token) {
-        throw new ApiError(401, 'invalid or not login');
+        return res
+        .status(401)
+        .json({"message" : "Invalid refresh token"});
     }
-    const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    const user = await User.findById(decodeToken._id).select(
-        '_id username email firstName lastName'
-    );
-    if (!user) {
-        throw new ApiError(401, 'invalid token value');
-    }
-    req.user = user;
-    next();
+    
+    await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (error, decodedToken) => {
+        if (error) {
+            return res
+            .status(401)
+            .json({"message" : "Access token expired or invalid token"});
+        }
+
+        req.user = await User.findById(decodedToken._id);
+        next();
+    });
 });
 
 export default auth;

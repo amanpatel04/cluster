@@ -1,25 +1,22 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import makeGetRequest from '../utils/getRequest';
-import { logout as log } from '../features/auth/auth';
+import { useApiCall } from '../utils/UseApiCall';
 
 const Logout = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    async function logoutHelper() {
-      const response = await makeGetRequest('/user/logout/', true);
-      if (response !== null) {
-        dispatch(log());
-        navigate('/login');
-      }
-    }
-    logoutHelper();
-  }, [dispatch]);
+    useEffect(() => {
+        async function logoutHelper() {
+            const response = await useApiCall('/user/logout/', true);
+            if (response !== null) {
+                localStorage.removeItem('isLoggedIn');
+                navigate('/login');
+            }
+        }
+        logoutHelper();
+    }, []);
 
-  return <div>Unable to logout</div>;
+    return <div>Unable to logout</div>;
 };
 
 export default Logout;

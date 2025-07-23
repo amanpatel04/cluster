@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import poster from '../../assets/default-video-image.png';
 import Sidebar from '../../components/Sidebar';
-import makeGetRequest from '../../utils/getRequest';
 import makeDeleteRequest from '../../utils/delelteRequest';
+import { useApiCall } from '../../utils/UseApiCall';
 
 import { MdOutlineDelete } from 'react-icons/md';
 
@@ -12,7 +12,7 @@ const Video = () => {
 
   useEffect(() => {
     async function getVideos() {
-      const response = await makeGetRequest('/video/get', true);
+      const response = await useApiCall('/video/get', true);
       if (response !== null) {
         setVideos(response.data);
       }

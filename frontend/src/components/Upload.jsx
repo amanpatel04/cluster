@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useApiCall } from '../utils/UseApiCall';
 
 import { RiUploadCloud2Line } from 'react-icons/ri';
 import { CiFileOn } from 'react-icons/ci';
@@ -8,6 +9,17 @@ import fileUpload from '../utils/fileUpload';
 import Sidebar from './Sidebar';
 
 const Upload = () => {
+
+  useEffect(()=> {
+    useApiCall("/user/isloggedin")
+    .then((data)=>{
+      console.log(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  },[]);
+
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const progressComplete = useSelector((state) => state.progress.progress);

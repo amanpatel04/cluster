@@ -1,19 +1,13 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import makeGetRequest from '../utils/getRequest';
-import { useDispatch } from 'react-redux';
-import { logout } from '../features/auth/auth';
+import { useApiCall } from '../utils/UseApiCall';
 
 const Header = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
 
     const logoutUser = async (event) => {
         event.preventDefault();
-        const response = await makeGetRequest('/user/logout', true);
+        const response = await useApiCall('/user/logout', true);
         if (response != null) {
-            dispatch(logout());
             navigate('/login');
         } else {
             console.log('Error : while logout');

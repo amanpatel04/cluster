@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import makeGetRequest from '../utils/getRequest';
+import {useApiCall} from '../utils/UseApiCall'
 
 const VideoPlayer = () => {
     const myVideoRef = useRef(null);
@@ -9,7 +9,7 @@ const VideoPlayer = () => {
 
     useEffect(() => {
         async function getVideo() {
-            const response = await makeGetRequest(`/video/get/${id}`, true);
+            const response = await useApiCall(`/video/get/${id}`, true);
             
             if (response !== null) {
                 myVideoRef.current.src = response.data.path.substr(6);

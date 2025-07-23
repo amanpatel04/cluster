@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import makeGetRequest from '../../utils/getRequest';
+import { useApiCall } from '../../utils/UseApiCall';
 import makeDeleteRequest from '../../utils/delelteRequest';
 import Sidebar from '../../components/Sidebar';
 import { FaPlay } from 'react-icons/fa';
@@ -13,7 +13,7 @@ const Audio = () => {
   const audioPlayer = useRef(null);
   useEffect(() => {
     async function getAudios() {
-      const response = await makeGetRequest('/audio/get', true);
+      const response = await useApiCall('/audio/get', true);
       if (response != null) {
         setAudios(response.data);
       }

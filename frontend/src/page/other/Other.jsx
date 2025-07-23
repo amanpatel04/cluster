@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 
 import Sidebar from '../../components/Sidebar';
 import makeDeleteRequest from '../../utils/delelteRequest';
-import makeGetRequest from '../../utils/getRequest';
+import { useApiCall } from '../../utils/UseApiCall';
+
 import { MdOutlineDownload } from 'react-icons/md';
 import { MdOutlineDelete } from 'react-icons/md';
 
@@ -12,7 +13,7 @@ const Other = () => {
 
   useEffect(() => {
     const fetchFiles = async () => {
-      const response = await makeGetRequest('/other/get', true);
+      const response = await useApiCall('/other/get', true);
       if (response != null) {
         setFiles(response.data);
       }
