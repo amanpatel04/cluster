@@ -1,5 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import 'tailwindcss';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-light-bg-dark: oklch(0.92 0 340);
+  --color-light-bg: oklch(0.96 0 340);
+  --color-light-bg-light: oklch(1 0 340);
+  --color-light-text: oklch(0.15 0 340);
+  --color-light-text-muted: oklch(0.4 0 340);
+  --color-light-highlight: oklch(1 0 340);
+  --color-light-border: oklch(0.6 0 340);
+  --color-light-border-muted: oklch(0.7 0 340);
+  --color-light-primary: oklch(0.4 0.1 340);
+  --color-light-secondary: oklch(0.4 0.1 160);
+  --color-light-danger: oklch(0.5 0.05 30);
+  --color-light-warning: oklch(0.5 0.05 100);
+  --color-light-success: oklch(0.5 0.05 160);
+  --color-light-info: oklch(0.5 0.05 260);
+
+  --color-dark-bg-dark: oklch(0.1 0 340);
+  --color-dark-bg: oklch(0.15 0 340);
+  --color-dark-bg-light: oklch(0.2 0 340);
+  --color-dark-text: oklch(0.96 0 340);
+  --color-dark-text-muted: oklch(0.76 0 340);
+  --color-dark-highlight: oklch(0.5 0 340);
+  --color-dark-border: oklch(0.4 0 340);
+  --color-dark-border-muted: oklch(0.3 0 340);
+  --color-dark-primary: oklch(0.76 0.1 340);
+  --color-dark-secondary: oklch(0.76 0.1 160);
+  --color-dark-danger: oklch(0.7 0.05 30);
+  --color-dark-warning: oklch(0.7 0.05 100);
+  --color-dark-success: oklch(0.7 0.05 160);
+  --color-dark-info: oklch(0.7 0.05 260);
+}
+
+@layer components {
+  .card {
+    @apply from-light-bg to-light-bg-dark hover:from-light-bg-light border-t-light-highlight shadow-light-text-muted dark:from-dark-bg/5 dark:to-dark-bg dark:border-dark-border dark:border-t-dark-highlight dark:hover:from-dark-bg-light dark:text-dark-text rounded-lg border-t bg-gradient-to-b p-3 shadow dark:border dark:shadow-none;
+  }
+  .input-text {
+    @apply border-light-border dark:border-dark-border dark:text-dark-text h-10 w-full border-b px-2 text-base font-light focus:outline-0;
+  }
+  .button-primary {
+    @apply bg-light-text dark:bg-dark-text dark:text-dark-bg-dark hover:bg-light-text-muted text-light-bg-light dark:hover:bg-dark-text-muted h-12 w-30 rounded hover:cursor-pointer;
+  }
+  .h-line {
+    @apply text-light-border dark:text-dark-border my-1;
+  }
+}

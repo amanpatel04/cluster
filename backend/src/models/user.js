@@ -1,6 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import mongoose, { Schema } from "mongoose";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
     {
@@ -9,15 +9,13 @@ const userSchema = new Schema(
             unique: true,
             required: true,
         },
-        firstName: {
+        name: {
             type: String,
-        },
-        lastName: {
-            type: String,
+            required: true,
         },
         profileImg: {
             type: String,
-            default: 'images/default.png',
+            default: "images/default.png",
         },
         password: {
             type: String,
@@ -27,44 +25,20 @@ const userSchema = new Schema(
             type: String,
             default: null,
         },
-        sizeAllocated: {
-            type: Number,
-            default: 1e10,
+        userInfo: {
+            type: Schema.Types.ObjectId,
+            ref: "UserInfo",
         },
-        sizeUsed: {
-            type: Number,
-            default: 0,
+        fileTable: {
+            type: Schema.Types.ObjectId,
+            ref: "FileTable",
         },
-        images: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'File',
-            },
-        ],
-        audios: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'File',
-            },
-        ],
-        videos: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'File',
-            },
-        ],
-        others: [
-            {
-                type: Schema.Types.ObjectId,
-                ref: 'File',
-            },
-        ],
     },
     { timestamps: true }
 );
 
-userSchema.pre('save', async function (next) {
-    if (this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
         this.password = await bcrypt.hash(this.password, 10);
     }
     next();
@@ -99,6 +73,6 @@ userSchema.methods.genrateRefreshToken = function () {
     );
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

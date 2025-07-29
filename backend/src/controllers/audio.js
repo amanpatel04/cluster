@@ -1,38 +1,24 @@
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiResponse from '../utils/ApiResponse.js';
-import ApiError from '../utils/ApiError.js';
 import removeFile from '../middlewares/removeFile.js';
+
 import File from '../models/files.js';
-import User from '../models/user.js';
+import FileTable from '../models/fileTable.js';
+import UserInfo from '../models/userInfo.js';
+
 import mongoose from 'mongoose';
 
 export const getAudioByPage = asyncHandler(async (req, res) => {
-    const page = req.query.page || 1;
-    const AudioFiles = await User.aggregate([
+    const AudioFiles = await FileTable.aggregate([
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(req.user._id),
+                _id: new mongoose.Types.ObjectId(req.user.fileTable),
             },
         },
-        {
-            $lookup: {
-                from: 'files',
-                localField: 'audios',
-                foreignField: '_id',
-                as: 'audiosList',
-                // pipeline: [
-                //     {
-                //         $skip: (page - 1) * 10,
-                //     },
-                //     {
-                //         $limit: 10,
-                //     },
-                // ],
-            },
-        },
+        
         {
             $project: {
-                audiosList: 1,
+                audios: 1,
             },
         },
     ]);
@@ -41,7 +27,7 @@ export const getAudioByPage = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(
                 200,
-                AudioFiles[0].audiosList,
+                AudioFiles[0].audios,
                 'audio successfully uploaded'
             )
         );
@@ -49,29 +35,41 @@ export const getAudioByPage = asyncHandler(async (req, res) => {
 
 export const getAudioById = asyncHandler(async (req, res) => {
     const fileId = req.params.id;
+
     const audioFile = await File.findById(fileId);
     if (!audioFile) {
-        throw new ApiError(404, 'File not found');
+        return res
+        .status(404)
+        .json(new ApiResponse(404, {}, 'Audio not found'));
     }
     return res
         .status(200)
-        .json(new ApiResponse(200, audioFile, 'audio successfully uploaded'));
+        .sendFile(audioFile.path);
 });
 
 export const deleteAudioById = asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const clientUser = req.user;
-    const file = await File.findById(id);
-    const user = await User.findById(clientUser._id);
-    if (!file) {
-        throw new ApiError(404, 'File not found');
+
+    const audioFile = await File.findByIdAndDelete(new mongoose.Types.ObjectId(id));
+
+    if (!audioFile) {
+        return res
+        .status(404)
+        .json(new ApiResponse(404, {}, 'Audio not found'));
     }
-    removeFile(file.path);
-    user.sizeUsed -= file.size;
-    user.audios.pull(file._id);
-    await user.save();
-    await File.findByIdAndDelete(id);
+
+    await FileTable.updateOne(
+        { _id: req.user.fileTable },
+        { $pull: { audios: { $in: [id] } } }
+    );
+
+    const userInfo = await UserInfo.findById(req.user.userInfo);
+    userInfo.audioSize -= audioFile.size;
+    await userInfo.save();
+
+    removeFile(audioFile.path);
+    
     return res
         .status(200)
-        .json(new ApiResponse(200, {}, 'audio successfully deleted'));
+        .json(new ApiResponse(200, {_id: id}, 'audio successfully deleted'));
 });

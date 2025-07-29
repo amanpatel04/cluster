@@ -1,8 +1,8 @@
-import multer, { diskStorage } from 'multer';
+import multer, { diskStorage } from "multer";
 
 const storage = diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/files');
+        cb(null, process.env.MEDIA_PATH);
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);

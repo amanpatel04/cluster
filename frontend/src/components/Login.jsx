@@ -1,101 +1,112 @@
-import { useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import makePostRequest from '../utils/postRequest.js';
-
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/auth/auth';
 const Login = () => {
-    const navigate = useNavigate();
-    const invalidText = useRef(null);
+  const [errorMsg, setErrorMsg] = useState('');
+  const dispatch = useDispatch();
 
-    const loginUser = async (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const response = await makePostRequest('/user/login', formData, true);
-        if (response !== null) {
-            localStorage.setItem('isLoggedIn', true);
-            navigate('/');
-        } else {
-            console.log('Error : while login');
-            const element = invalidText.current;
-            element.classList.remove('hidden');
-        }
-    };
+  const validateLogin = (form) => {
+    const email = form.get('email');
+    const password = form.get('password');
+    if (
+      email.trim() === '' ||
+      !email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+    ) {
+      setErrorMsg('Please enter a valid email');
+      return false;
+    }
+    if (password.trim() === '' || password.length < 8) {
+      setErrorMsg('Password must be at least 8 characters long');
+      return false;
+    }
+    return true;
+  };
 
-    const handleChange = () => {
-        const element = invalidText.current;
-        if (element.classList.contains('hidden')) return;
-        element.classList.add('hidden');
-    };
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    if (!validateLogin(formData)) {
+      return;
+    }
+    const res = await fetch('/api/v1/user/login', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    });
 
-    return (
-        <>
-            <div className="w-[95%] mx-auto mt-[calc(50vh-11rem)] bg-green-50 rounded p-2 md:w-1/3">
-                <div className="flex justify-center">
-                    <h4 className="w-32 h-10 text-green-500 text-2xl font-medium flex justify-center items-center">
-                        Login
-                    </h4>
-                </div>
-                <div>
-                    <form
-                        method="post"
-                        encType="multipart/form-data"
-                        onSubmit={loginUser}
-                        className="flex flex-col gap-4 mt-6"
-                    >
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            onChange={handleChange}
-                            required
-                            className="border rounded h-10 px-2 text-lg font-medium focus:outline-none"
-                        ></input>
+    const data = await res.json();
 
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            onChange={handleChange}
-                            required
-                            className="border rounded h-10 px-2 text-lg font-medium focus:outline-none"
-                        ></input>
+    if (data.success) {
+      dispatch(login());
+    } else {
+      console.log(data.message);
+      setErrorMsg(data.message);
+    }
+  };
 
-                        <div className="">
-                            <div className="text-right px-3 h-8">
-                                <p
-                                    className="text-red-500 font-light hidden"
-                                    ref={invalidText}
-                                >
-                                    Invalid Email or Password
-                                </p>
-                            </div>
-                            <div className="flex flex-row">
-                                <div className="basis-3/5 flex justify-center items-center ">
-                                    <Link
-                                        to="/forgotPassword"
-                                        className="text-lg text-indigo-400 underline hover:cursor-pointer"
-                                    >
-                                        Forgot Password
-                                    </Link>
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="bg-green-500 w-28 h-12 basis-2/5 text-slate-100 rounded font-semibold"
-                                >
-                                    Login
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+  return (
+    <div className='bg-light-bg-dark dark:bg-dark-bg-dark flex h-screen w-screen items-center justify-center'>
+      <div className='card w-11/12 max-w-96'>
+        <div>
+          <div className='my-4 flex h-10 items-center justify-center'>
+            <h4 className='text-lg font-semibold'>Login</h4>
+          </div>
+          <div className='my-8 flex justify-center overflow-hidden'>
+            <p
+              className={`${errorMsg ? 'block' : 'hidden'} text-sm font-light text-red-400`}
+            >
+              {errorMsg}
+            </p>
+          </div>
+          <form
+            action=''
+            method='post'
+            className='grid gap-2'
+            onSubmit={handleFormSubmit}
+            onChange={() => setErrorMsg('')}
+            encType='multipart/form-data'
+          >
+            <input
+              className='input-text'
+              type='email'
+              name='email'
+              id='email'
+              placeholder='Email'
+            />
+
+            <input
+              className='input-text'
+              type='password'
+              name='password'
+              id='password'
+              placeholder='password'
+            />
+            <div className='my-2 flex justify-end px-2'>
+              <a
+                className='text-sm font-light text-blue-400 underline'
+                href='/resetpassword'
+              >
+                Forgot Password
+              </a>
             </div>
-            <div className="flex justify-center mt-3">
-                <p> Don't have an account? </p>
-                <Link to="/signup" className="underline text-indigo-400">
-                    Sign Up
-                </Link>
+            <div className='flex h-40 items-center justify-center'>
+              <input className='button-primary' type='submit' value='Login' />
             </div>
-        </>
-    );
+          </form>
+        </div>
+        <hr className='h-line' />
+        <div className='text-light-text-muted dark:text-dark-text-muted flex items-center justify-center text-sm font-light'>
+          <p>
+            Don't have an account ?{' '}
+            <a className='text-blue-400 underline' href='/signup'>
+              {' '}
+              Signup{' '}
+            </a>{' '}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

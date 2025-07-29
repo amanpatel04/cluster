@@ -1,0 +1,9 @@
+const Loading = () => {
+  return (
+    <div className='flex h-screen w-screen items-center justify-center'>
+      <div className='aspect-square h-32 animate-spin rounded-full border-b-2 border-gray-900 dark:border-white'></div>
+    </div>
+  );
+};
+
+export default Loading;

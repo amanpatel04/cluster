@@ -1,40 +1,26 @@
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiResponse from '../utils/ApiResponse.js';
-import ApiError from '../utils/ApiError.js';
 import removeFile from '../middlewares/removeFile.js';
+
 import File from '../models/files.js';
-import User from '../models/user.js';
+import FileTable from '../models/fileTable.js';
+import UserInfo from '../models/userInfo.js';
+
 import mongoose from 'mongoose';
 
 export const getImageByPage = asyncHandler(async (req, res) => {
     const page = req.query.page || 1;
-    const ImageFiles = await User.aggregate([
+    const ImageFiles = await FileTable.aggregate([
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(req.user._id),
-            },
-        },
-        {
-            $lookup: {
-                from: 'files',
-                localField: 'images',
-                foreignField: '_id',
-                as: 'imagesList',
-                // pipeline: [
-                //     {
-                //         $skip: (page - 1) * 10,
-                //     },
-                //     {
-                //         $limit: 10,
-                //     },
-                // ],
+                _id: new mongoose.Types.ObjectId(req.user.fileTable),
             },
         },
         {
             $project: {
-                imagesList: 1,
+                images: 1, // Efficient pagination on array
             },
-        },
+        }
     ]);
 
     return res
@@ -42,40 +28,49 @@ export const getImageByPage = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(
                 200,
-                ImageFiles[0].imagesList,
+                ImageFiles[0].images,
                 'image successfully uploaded'
             )
         );
 });
 
 export const getImageById = asyncHandler(async (req, res) => {
-    const fileId = req.params.id;
-    const file = await File.findById(fileId);
-    if (!file) {
-        throw new ApiError(404, 'File not found');
-    }
-    const imageFile = await File.findById(fileId);
-    if (imageFile.mimetype.split('/')[0] !== 'image') {
-        throw new ApiError(404, 'File is not an image');
+    const imageId = req.params.id;
+    const imageFile = await File.findById(imageId);
+    if (!imageFile) {
+        return res
+            .status(404)
+            .json(new ApiResponse(404, {}, 'Image not found'));
     }
     return res
-        .status(200)
-        .json(new ApiResponse(200, imageFile, 'image successfully uploaded'));
+    .status(200)
+    .sendFile(imageFile.path);
 });
 
 export const deleteImageById = asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const clientUser = req.user;
-    const file = await File.findById(id);
-    const user = await User.findById(clientUser._id);
-    if (!file) {
-        throw new ApiError(404, 'File not found');
+    
+    
+    
+    const deleteFile = await File.findByIdAndDelete(new mongoose.Types.ObjectId(id));
+    
+    if (!deleteFile) {
+        return res
+        .status(404)
+        .json(new ApiResponse(404, {}, 'Image not found'));
     }
-    removeFile(file.path);
-    user.sizeUsed -= file.size;
-    user.images.pull(file._id);
-    await user.save();
-    await File.findByIdAndDelete(id);
+    
+    await FileTable.updateOne(
+        { _id: req.user.fileTable },
+        { $pull: { images: { $in: [id] } } }
+    );
+
+    const userInfo = await UserInfo.findById(req.user.userInfo);
+    userInfo.imageSize -= deleteFile.size;
+    await userInfo.save();
+
+    removeFile(deleteFile.path);
+
     return res
         .status(200)
         .json(new ApiResponse(200, {}, 'Image deleted successfully'));

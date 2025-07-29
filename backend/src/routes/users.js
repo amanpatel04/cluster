@@ -4,7 +4,7 @@ import {
     login,
     logout,
     loginRenew,
-    getUser,
+    getUserInfo,
     isLoggedIn,
 } from '../controllers/user.js';
 import upload from '../middlewares/multer.js';
@@ -16,5 +16,5 @@ router.route('/register').post(upload.single('profileImg'), userRegister);
 router.route('/login').post(upload.none(), login);
 router.route('/logout').get(auth, logout);
 router.route('/renew').get(loginRenew);
-router.route('/get').get(auth, getUser);
+router.route('/get/info').get(auth, getUserInfo);
 router.route('/isloggedin').get(auth, isLoggedIn);
