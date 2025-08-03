@@ -23,6 +23,10 @@ const fileSchema = new Schema(
         size: {
             type: Number,
         },
+        allowedUsers: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+        },
     },
     { timestamps: true }
 );

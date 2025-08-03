@@ -5,11 +5,13 @@ import { login, logout, setLoading } from './features/auth/auth';
 
 import Login from './components/Login';
 import Signup from './components/Signup';
+import ForgetPassword from './components/ForgetPassword';
 import Logout from './components/Logout';
 import Loading from './components/Loading';
 import Dashboard from './components/Dashboard';
 import Gallery from './components/Gallery';
 import VideoTimeline from './components/VideoTimeline';
+import VideoPlayer from './components/VideoPlayer';
 import AudioList from './components/AudioList';
 import Files from './components/Files';
 import ProtectedLayout from './components/ProtectedLayout';
@@ -46,7 +48,6 @@ function App() {
               } else {
                 dispatch(logout());
               }
-              console.log('renew token', data);
               dispatch(setLoading(false));
             });
           });
@@ -70,12 +71,14 @@ function App() {
         <Route element={<AuthRoute />}>
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
+          <Route path='/resetpass' element={<ForgetPassword />} />
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path='/' element={<ProtectedLayout />}>
             <Route path='/' element={<Dashboard />} />
             <Route path='/gallery' element={<Gallery />} />
             <Route path='/video' element={<VideoTimeline />} />
+            <Route path='/video/:id' element={<VideoPlayer />} />
             <Route path='/audio' element={<AudioList />} />
             <Route path='/file' element={<Files />} />
             <Route path='/logout' element={<Logout />} />

@@ -10,7 +10,7 @@ const ProtectedLayout = () => {
       <div className='flex flex-1 flex-col'>
         <Header />
         <Upload />
-        <main className='p-2'>
+        <main className='min-w-72 p-2'>
           <Outlet />
         </main>
       </div>

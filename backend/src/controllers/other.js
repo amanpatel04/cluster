@@ -3,15 +3,16 @@ import ApiResponse from '../utils/ApiResponse.js';
 import ApiError from '../utils/ApiError.js';
 import removeFile from '../middlewares/removeFile.js';
 import File from '../models/files.js';
-import User from '../models/user.js';
+import FileTable from '../models/fileTable.js';
+import UserInfo from '../models/userInfo.js';
 import mongoose from 'mongoose';
 
 export const getOtherByPage = asyncHandler(async (req, res) => {
     const page = req.query.page || 1;
-    const otherFiles = await User.aggregate([
+    const otherFiles = await FileTable.aggregate([
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(req.user._id),
+                _id: new mongoose.Types.ObjectId(req.user.fileTable),
             },
         },
         {
@@ -32,7 +33,12 @@ export const getOtherByPage = asyncHandler(async (req, res) => {
         },
         {
             $project: {
-                othersList: 1,
+                othersList: {
+                    _id: 1,
+                    size: 1,
+                    path: 1,
+                    originalname: 1,
+                }
             },
         },
     ]);
@@ -49,29 +55,59 @@ export const getOtherByPage = asyncHandler(async (req, res) => {
 
 export const getOtherById = asyncHandler(async (req, res) => {
     const fileId = req.params.id;
-    const otherFile = await File.findById(fileId);
+    const otherFile = await File.findById(fileId).select('originalname path size mimetype createdAt allowedUsers');
+
     if (!otherFile) {
-        throw new ApiError(404, 'File not found');
+        return res
+            .status(404)
+            .json(new ApiResponse(404, {}, 'Other not found'));
     }
+    if (!otherFile.allowedUsers.equals(req.user._id)) {
+        return res
+            .status(404)
+            .json(new ApiResponse(404, {}, 'Privacy : Invalid user'));
+    }
+
+    const userInfo = await UserInfo.findById(req.user.userInfo);
+    userInfo.download += otherFile.size;
+    await userInfo.save();
+
     return res
         .status(200)
-        .json(new ApiResponse(200, otherFile, 'other successfully uploaded'));
+        .sendFile(otherFile.path);
 });
 
 export const deleteOtherById = asyncHandler(async (req, res) => {
     const id = req.params.id;
-    const clientUser = req.user;
-    const file = await File.findById(id);
-    const user = await User.findById(clientUser._id);
-    if (!file) {
-        throw new ApiError(404, 'File not found');
+    
+    const deleteFile = await File.findById(id).select('allowedUsers size path');
+
+    if (!deleteFile) {
+        return res
+        .status(404)
+        .json(new ApiResponse(404, {}, 'Other not found'));
     }
-    removeFile(file.path);
-    user.sizeUsed -= file.size;
-    user.others.pull(file._id);
-    await user.save();
-    await File.findByIdAndDelete(id);
+    
+    if (!deleteFile.allowedUsers.equals(req.user._id)) {
+        return res
+            .status(404)
+            .json(new ApiResponse(404, {}, 'Privacy : Invalid user'));
+    }
+    
+    await File.deleteOne({ _id: id });
+    
+    await FileTable.updateOne(
+        { _id: req.user.fileTable },
+        { $pull: { others: { $in: [id] } } }
+    );
+
+    const userInfo = await UserInfo.findById(req.user.userInfo);
+    userInfo.otherSize -= deleteFile.size;
+    await userInfo.save();
+
+    removeFile(deleteFile.path);
+
     return res
         .status(200)
-        .json(new ApiResponse(200, {}, 'other successfully deleted'));
+        .json(new ApiResponse(200, {}, 'Other successfully deleted'));
 });

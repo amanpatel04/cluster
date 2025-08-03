@@ -23,7 +23,7 @@ const auth = asyncHandler(async (req, res, next) => {
                     .json(new ApiResponse(401, {}, "Access token is invalid"));
             }
 
-            req.user = await User.findById(decodedToken._id);
+            req.user = await User.findById(decodedToken._id).select("-password");
             next();
         }
     );

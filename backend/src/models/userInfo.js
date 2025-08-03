@@ -44,8 +44,19 @@ const userInfoSchema = new Schema(
         },
         recentFiles: [
             {
-                type: Schema.Types.ObjectId,
-                ref: "File",
+                _id: {
+                    type: Schema.Types.ObjectId,
+                    ref: "File",
+                },
+                name: {
+                    type: String,
+                },
+                type: {
+                    type: String,
+                },
+                size: {
+                    type: Number,
+                },
             },
         ],
     },

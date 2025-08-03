@@ -1,7 +1,47 @@
 import { useEffect, useState } from 'react';
 
+import Image from './Image';
+
 const Gallery = () => {
   const [images, setImages] = useState([]);
+  const [index, setIndex] = useState(-1);
+
+  const closeImageModal = () => {
+    setIndex(-1);
+  };
+
+  const nextImage = () => {
+    if (index + 1 < images.length) {
+      setIndex(index + 1);
+    }
+  };
+
+  const handleDelete = () => {
+    const confirm = window.confirm(
+      'Are you sure you want to delete this image?'
+    );
+    if (!confirm) {
+      return;
+    }
+    fetch(`/api/v1/image/delete/${images[index]}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    }).then((res) => {
+      res.json().then((data) => {
+        if (data.success) {
+          setImages(images.filter((image) => image !== images[index]));
+          setIndex(Math.min(index, images.length - 2));
+        }
+      });
+    });
+  };
+
+  const prevImage = () => {
+    if (index > 0) {
+      setIndex(index - 1);
+    }
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     fetch('/api/v1/image/get', {
@@ -12,7 +52,6 @@ const Gallery = () => {
       .then((res) => {
         res.json().then((data) => {
           if (data.success) {
-            console.log(data);
             setImages(data.data);
           }
         });
@@ -32,16 +71,29 @@ const Gallery = () => {
 
   return (
     <div>
+      {index !== -1 && (
+        <Image
+          id={images[index]}
+          close={closeImageModal}
+          next={nextImage}
+          prev={prevImage}
+          handleDelete={handleDelete}
+        />
+      )}
       <div className='grid grid-cols-3 gap-1 md:grid-cols-4 lg:grid-cols-5'>
-        {images.map((image) => {
+        {images.map((image, index) => {
           return (
             <div
-              className='dark:border-dark-border aspect-[3/2] dark:border'
+              className='dark:border-dark-border aspect-[3/2] hover:cursor-pointer dark:border'
               key={image}
+              onClick={() => {
+                setIndex(index);
+              }}
             >
               <img
-                src={`/api/v1/image/get/${image}`}
+                src={`/api/v1/image/get/blob/${image}`}
                 alt={image}
+                loading='lazy'
                 className='h-full w-full object-cover'
               />
             </div>

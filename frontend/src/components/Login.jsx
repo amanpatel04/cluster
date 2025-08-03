@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from '../features/auth/auth';
 const Login = () => {
@@ -39,7 +40,6 @@ const Login = () => {
     if (data.success) {
       dispatch(login());
     } else {
-      console.log(data.message);
       setErrorMsg(data.message);
     }
   };
@@ -82,12 +82,12 @@ const Login = () => {
               placeholder='password'
             />
             <div className='my-2 flex justify-end px-2'>
-              <a
+              <Link
                 className='text-sm font-light text-blue-400 underline'
-                href='/resetpassword'
+                to={'/resetpass'}
               >
                 Forgot Password
-              </a>
+              </Link>
             </div>
             <div className='flex h-40 items-center justify-center'>
               <input className='button-primary' type='submit' value='Login' />
@@ -98,10 +98,10 @@ const Login = () => {
         <div className='text-light-text-muted dark:text-dark-text-muted flex items-center justify-center text-sm font-light'>
           <p>
             Don't have an account ?{' '}
-            <a className='text-blue-400 underline' href='/signup'>
+            <Link className='text-blue-400 underline' to={'/signup'}>
               {' '}
               Signup{' '}
-            </a>{' '}
+            </Link>{' '}
           </p>
         </div>
       </div>

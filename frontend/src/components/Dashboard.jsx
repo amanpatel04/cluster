@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react';
+import byteToHuman from '../utils/byteToHuman';
 
 const Dashboard = () => {
-  const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState({
+    cpuUsage: 0,
+    memoryUsage: 0,
+    download: 0,
+    upload: 0,
+    imageSize: 0,
+    audioSize: 0,
+    videoSize: 0,
+    otherSize: 0,
+    plan: 'free',
+    sizeAllocated: 1,
+    recentFiles: [],
+  });
   const [totalSize, setTotalSize] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +29,6 @@ const Dashboard = () => {
       .then((res) => {
         res.json().then((data) => {
           if (data.success) {
-            console.log(data);
             let total =
               data.data.imageSize +
               data.data.audioSize +
@@ -57,16 +69,16 @@ const Dashboard = () => {
             RAM Usage: {userInfo.memoryUsage}%
           </p>
           <p className='flex justify-center text-sm font-light'>
-            Upload: {parseInt(userInfo.upload / 1e6)} MB
+            Upload: {byteToHuman(userInfo.upload)}
           </p>
           <p className='flex justify-center text-sm font-light'>
-            Download: {parseInt(userInfo.download / 1e6)} MB
+            Download: {byteToHuman(userInfo.download)}
           </p>
         </div>
         <div className='card flex h-40 flex-col justify-around'>
           <h4 className='text-center'>
             {`
-            ${(totalSize / 1e9).toFixed(2)} GB used of ${parseInt(userInfo.sizeAllocated / 1e9)} GB`}
+            ${byteToHuman(totalSize)} used of ${parseInt(userInfo.sizeAllocated / 1e9)} GB`}
           </h4>
           <div>
             <div className='bg-light-bg-light dark:bg-dark-bg-light h-6 w-full overflow-hidden'>
@@ -83,22 +95,30 @@ const Dashboard = () => {
           <div className='flex flex-col items-center justify-center gap-2'>
             <div className='aspect-square w-6 rounded-full bg-red-400'></div>
             <h4>Video</h4>
-            <p className='text-sm font-light'>{`${parseInt(userInfo.videoSize / 1e6)} MB`}</p>
+            <p className='text-sm font-light'>
+              {byteToHuman(userInfo.videoSize)}
+            </p>
           </div>
           <div className='flex flex-col items-center justify-center gap-2'>
             <div className='aspect-square w-6 rounded-full bg-yellow-400'></div>
             <h4>Image</h4>
-            <p className='text-sm font-light'>{`${parseInt(userInfo.imageSize / 1e6)} MB`}</p>
+            <p className='text-sm font-light'>
+              {byteToHuman(userInfo.imageSize)}
+            </p>
           </div>
           <div className='flex flex-col items-center justify-center gap-2'>
             <div className='aspect-square w-6 rounded-full bg-green-400'></div>
             <h4>Audio</h4>
-            <p className='text-sm font-light'>{`${parseInt(userInfo.audioSize / 1e6)} MB`}</p>
+            <p className='text-sm font-light'>
+              {byteToHuman(userInfo.audioSize)}
+            </p>
           </div>
           <div className='flex flex-col items-center justify-center gap-2'>
             <div className='aspect-square w-6 rounded-full bg-slate-400'></div>
             <h4>Other</h4>
-            <p className='text-sm font-light'>{`${parseInt(userInfo.otherSize / 1e6)} MB`}</p>
+            <p className='text-sm font-light'>
+              {byteToHuman(userInfo.otherSize)}
+            </p>
           </div>
         </div>
         <div className='card flex h-40 flex-col justify-around'>
@@ -155,20 +175,20 @@ const Dashboard = () => {
         <table className='w-full text-left'>
           <thead>
             <tr className='bg-light-bg-dark dark:bg-dark-bg-dark rounded border-b text-sm'>
-              <th>File Name</th>
-              <th>File Size</th>
-              <th>Created At</th>
+              <th>Name</th>
+              <th>Size</th>
+              <th>Type</th>
             </tr>
           </thead>
           <tbody>
             {userInfo.recentFiles?.map((file) => (
               <tr
                 className='border-dark-text-muted dark:border-light-text-muted border-b text-sm font-light'
-                key={file}
+                key={file.id}
               >
-                <td>Video.mp4</td>
-                <td>1.2 GB</td>
-                <td>2023-01-01</td>
+                <td>{file.name.substr(0, 15) + '...'}</td>
+                <td>{byteToHuman(file.size)}</td>
+                <td>{file.type.split('/')[0]}</td>
               </tr>
             ))}
           </tbody>

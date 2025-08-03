@@ -1,9 +1,28 @@
+import { useLocation } from 'react-router-dom';
+
 const UploadButton = (props) => {
+  const location = useLocation();
+
+  const visiableRoutes = new Set([
+    '/',
+    '/gallery',
+    '/video',
+    '/audio',
+    '/file',
+  ]);
+
+  const isVisiable = visiableRoutes.has(location.pathname);
+
   const handleChange = (event) => {
     const files = event.target.files;
     if (files.length === 0) return;
     props.setUploadList(files);
   };
+
+  if (!isVisiable) {
+    return null;
+  }
+
   return (
     <div className='px-2'>
       <div>
