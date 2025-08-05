@@ -36,7 +36,7 @@ const userInfoSchema = new Schema(
         },
         sizeAllocated: {
             type: Number,
-            default: 1e10,
+            default: 0,
         },
         plan: {
             type: String,

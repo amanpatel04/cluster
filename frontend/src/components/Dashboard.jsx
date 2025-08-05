@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import byteToHuman from '../utils/byteToHuman';
 
+import Button from './ui/Button';
+
 const Dashboard = () => {
   const [userInfo, setUserInfo] = useState({
     cpuUsage: 0,
@@ -18,10 +20,25 @@ const Dashboard = () => {
   const [totalSize, setTotalSize] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const handleResend = () => {
+    fetch('/api/v1/user/verify/resend/', {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          alert('Resend successful');
+        } else {
+          alert('Resend failed');
+        }
+      });
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    fetch('/api/v1/user/get/info', {
+    fetch('/api/v1/user/info', {
       method: 'GET',
       credentials: 'include',
       signal: controller.signal,
@@ -77,8 +94,23 @@ const Dashboard = () => {
         </div>
         <div className='card flex h-40 flex-col justify-around'>
           <h4 className='text-center'>
-            {`
-            ${byteToHuman(totalSize)} used of ${parseInt(userInfo.sizeAllocated / 1e9)} GB`}
+            {userInfo.sizeAllocated === 0 ? (
+              <div className='flex items-center justify-center gap-2'>
+                Verify your email to get 10GB storage{' '}
+                <Button
+                  onClick={handleResend}
+                  variant='secondary'
+                  className={
+                    'dark:border-dark-border border-light-border border'
+                  }
+                >
+                  Resend
+                </Button>
+              </div>
+            ) : (
+              `
+            ${byteToHuman(totalSize)} used of ${byteToHuman(userInfo.sizeAllocated)}`
+            )}
           </h4>
           <div>
             <div className='bg-light-bg-light dark:bg-dark-bg-light h-6 w-full overflow-hidden'>
@@ -184,7 +216,7 @@ const Dashboard = () => {
             {userInfo.recentFiles?.map((file) => (
               <tr
                 className='border-dark-text-muted dark:border-light-text-muted border-b text-sm font-light'
-                key={file.id}
+                key={file._id}
               >
                 <td>{file.name.substr(0, 15) + '...'}</td>
                 <td>{byteToHuman(file.size)}</td>

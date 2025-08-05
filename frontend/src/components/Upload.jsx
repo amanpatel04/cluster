@@ -33,7 +33,7 @@ const Upload = () => {
 
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
+          const data = JSON.parse(xhr.response);
           if (data.success) {
             let temp = [];
             for (let i = 1; i < uploadList.length; i++) {
@@ -41,6 +41,14 @@ const Upload = () => {
             }
             setUploadList(temp);
           }
+        } else if (xhr.readyState === 4 && xhr.status !== 200) {
+          const data = JSON.parse(xhr.response);
+          console.log(data.message);
+          let temp = [];
+          for (let i = 1; i < uploadList.length; i++) {
+            temp.push(uploadList[i]);
+          }
+          setUploadList(temp);
         }
       };
       xhr.send(fromData);

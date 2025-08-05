@@ -6,6 +6,7 @@ import { login, logout, setLoading } from './features/auth/auth';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import ForgetPassword from './components/ForgetPassword';
+import Verify from './components/Verify';
 import Logout from './components/Logout';
 import Loading from './components/Loading';
 import Dashboard from './components/Dashboard';
@@ -56,7 +57,6 @@ function App() {
       .catch((error) => {
         console.log(error.message);
       });
-    console.log('App.jsx rendered');
     return () => {
       abort.abort();
     };
@@ -84,6 +84,7 @@ function App() {
             <Route path='/logout' element={<Logout />} />
           </Route>
         </Route>
+        <Route path='/verify' element={<Verify />} />
       </Routes>
     </BrowserRouter>
   );

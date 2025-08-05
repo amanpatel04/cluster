@@ -1,5 +1,4 @@
 import ApiResponse from '../utils/ApiResponse.js';
-import ApiError from '../utils/ApiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import File from '../models/files.js';
 import FileTable from '../models/fileTable.js';
@@ -12,10 +11,21 @@ export const uploadFile = asyncHandler(async (req, res) => {
 
     const fileTable = await FileTable.findById(req.user.fileTable);
     const userInfo = await UserInfo.findById(req.user.userInfo);
+    
+    const totalSize = userInfo.imageSize + userInfo.videoSize + userInfo.audioSize + userInfo.otherSize;
+    
+    if (totalSize + clientFile.size > userInfo.sizeAllocated) {
+        return res
+        .status(400)
+        .json(new ApiResponse(400, {}, 'You have reached your file storage limit'));
+    }
+    
     const file = await File.create(clientFile);
 
     if (!file) {
-        throw new ApiError(400, 'Something went wrong while uploading file');
+        return res
+            .status(400)
+            .json(new ApiResponse(400, {}, 'Something went wrong while creating file'));
     }
 
     const fileType = file.mimetype.split('/')[0];
