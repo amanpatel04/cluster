@@ -25,9 +25,8 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`bg-dark-bg-dark/10 dark:bg-light-bg-dark/10 fixed h-screen w-screen ${
-        isOpen ? 'right-0' : 'right-full'
-      } fixed z-10 transition-[right] duration-500 ease-out`}
+      className={`bg-dark-bg-dark/10 dark:bg-light-bg-dark/10 fixed h-screen w-screen ${isOpen ? 'right-0' : 'right-full'
+        } fixed z-10 transition-[right] duration-500 ease-out`}
       onClick={closeSidebar}
     >
       <div className='from-light-bg-dark to-light-bg dark:from-dark-bg-dark dark:to-dark-bg dark:text-dark-text flex h-full w-2/3 max-w-80 flex-col justify-between overflow-y-auto bg-gradient-to-r'>
@@ -81,11 +80,11 @@ const Sidebar = () => {
             <IconListItem
               icon={
                 <span className='material-symbols-outlined'>
-                  account_circle
+                  feedback
                 </span>
               }
-              name={'Profile'}
-              href={'/profile'}
+              name={'Feedback'}
+              href={'/feedback'}
             />
             <IconListItem
               icon={<span className='material-symbols-outlined'>Logout</span>}

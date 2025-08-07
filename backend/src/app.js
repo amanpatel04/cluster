@@ -4,13 +4,13 @@ import cookieParser from 'cookie-parser';
 const app = express();
 
 app.use((req, res, next) => {
-    console.log(`${req.method} : ${req.url}`);
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header(
-        'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
-    );
-    next();
+  console.log(`${req.method} : ${req.url}`);
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
 });
 
 // middelware
@@ -25,6 +25,7 @@ import { router as audioRouter } from './routes/audio.js';
 import { router as otherRouter } from './routes/other.js';
 import { router as videoRouter } from './routes/video.js';
 import { router as fileRouter } from './routes/file.js';
+import { router as feedbackRouter } from './routes/feedback.js';
 
 app.use('/api/v1/user', usersRouter);
 app.use('/api/v1/image', imageRouter);
@@ -32,5 +33,6 @@ app.use('/api/v1/audio', audioRouter);
 app.use('/api/v1/other', otherRouter);
 app.use('/api/v1/video', videoRouter);
 app.use('/api/v1/file', fileRouter);
+app.use('/api/v1/feedback', feedbackRouter);
 
 export default app;

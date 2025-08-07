@@ -15,6 +15,7 @@ import VideoTimeline from './components/VideoTimeline';
 import VideoPlayer from './components/VideoPlayer';
 import AudioList from './components/AudioList';
 import Files from './components/Files';
+import Feedback from "./components/Feedback";
 import ProtectedLayout from './components/ProtectedLayout';
 
 import ProtectedRoute from './features/ProtectedRoute';
@@ -81,6 +82,7 @@ function App() {
             <Route path='/video/:id' element={<VideoPlayer />} />
             <Route path='/audio' element={<AudioList />} />
             <Route path='/file' element={<Files />} />
+            <Route path='/feedback' element={<Feedback />} />
             <Route path='/logout' element={<Logout />} />
           </Route>
         </Route>
