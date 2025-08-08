@@ -38,7 +38,7 @@ const generateEmailToken = async (_id, email) => {
   )
 
 
-  const link = `http://lochost:5173/verify/?token=${token}`;
+  const link = `${process.env.BASE_URL}/verify/?token=${token}`;
   sendMail(email, "Email Verification From Fileorca", `Click on the link to verify your email : ${link}`);
   return token;
 }
