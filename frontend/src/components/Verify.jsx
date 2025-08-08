@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 
 import Button from './ui/Button';
 const Verify = () => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('waiting for verification...');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
@@ -32,7 +32,7 @@ const Verify = () => {
     return () => {
       controller.abort();
     };
-  });
+  }, [token]);
 
   return (
     <div>
