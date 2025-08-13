@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+
+import apiGateway from '../utils/apiGateway';
 import byteToHuman from '../utils/byteToHuman';
 import Card from './ui/Card';
 import { useNavigate } from 'react-router-dom';
@@ -16,17 +18,11 @@ const VideoPlayer = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`/api/v1/video/get/meta/${id}`, {
-      method: 'GET',
-      credentials: 'include',
-      signal: controller.signal,
-    })
-      .then((res) => {
-        res.json().then((data) => {
-          if (data.success) {
-            setVideo(data.data);
-          }
-        });
+    apiGateway(`/api/v1/video/get/meta/${id}`, 'GET', undefined, controller)
+      .then((data) => {
+        if (data.success) {
+          setVideo(data.data);
+        }
       })
       .catch((error) => {
         console.log(error.message);
@@ -56,16 +52,11 @@ const VideoPlayer = () => {
     if (!confirm) {
       return;
     }
-    fetch(`/api/v1/video/delete/${video._id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    })
-      .then((res) => {
-        res.json().then((data) => {
-          if (data.success) {
-            navigate('/video');
-          }
-        });
+    apiGateway(`/api/v1/video/delete/${video._id}`, 'DELETE', undefined, undefined)
+      .then((data) => {
+        if (data.success) {
+          navigate('/video');
+        }
       })
       .catch((error) => {
         console.log(error.message);

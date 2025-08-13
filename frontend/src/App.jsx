@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, logout, setLoading } from './features/auth/auth';
+import { login, setLoading } from './features/auth/auth';
+import apiGateway from './utils/apiGateway';
 
 import Login from './components/Login';
 import Signup from './components/Signup';
@@ -23,41 +24,21 @@ import AuthRoute from './features/AuthRoute';
 
 function App() {
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.auth.loading);
-
+  const { loading } = useSelector((state) => state.auth);
   useEffect(() => {
     dispatch(setLoading(true));
     const abort = new AbortController();
-    fetch('/api/v1/user/isLoggedIn', {
-      method: 'GET',
-      credentials: 'include',
-      signal: abort.signal,
-    })
-      .then((res) => res.json())
+    apiGateway('/api/v1/user/isLoggedIn/', 'GET', undefined, abort)
       .then((data) => {
         if (data.success) {
           dispatch(login());
-          dispatch(setLoading(false));
-        } else {
-          fetch('/api/v1/user/renew', {
-            method: 'GET',
-            credentials: 'include',
-            signal: abort.signal,
-          }).then((res) => {
-            res.json().then((data) => {
-              if (data.success) {
-                dispatch(login());
-              } else {
-                dispatch(logout());
-              }
-              dispatch(setLoading(false));
-            });
-          });
         }
+        dispatch(setLoading(false));
       })
       .catch((error) => {
         console.log(error.message);
-      });
+      })
+
     return () => {
       abort.abort();
     };
@@ -66,6 +47,7 @@ function App() {
   if (loading) {
     return <Loading />;
   }
+
   return (
     <BrowserRouter>
       <Routes>

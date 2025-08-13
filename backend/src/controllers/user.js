@@ -36,10 +36,9 @@ const generateEmailToken = async (_id, email) => {
     process.env.EMAIL_VERIFICATION_SECRET,
     { expiresIn: "15m" }
   )
+  const link = `http://localhost:5173/verify/?token=${token}`;
+  // sendMail(email, "Email Verification From Fileorca", `Click on the link to verify your email : ${link}`);
 
-
-  const link = `${process.env.BASE_URL}/verify/?token=${token}`;
-  sendMail(email, "Email Verification From Fileorca", `Click on the link to verify your email : ${link}`);
   return token;
 }
 
@@ -73,12 +72,12 @@ export const userRegister = asyncHandler(async (req, res) => {
       .json(new ApiResponse(400, {}, "User registration failed"));
   }
 
-  await generateEmailToken(userInfo._id, user.email);
+  const token = await generateEmailToken(userInfo._id, user.email);
 
   delete newUser.password;
 
   res.status(201).json(
-    new ApiResponse(200, { "_id": newUser._id }, "User registered successfully")
+    new ApiResponse(200, { "_id": newUser._id, "token": token }, "User registered successfully")
   );
 });
 
@@ -116,8 +115,8 @@ export const userVerify = asyncHandler(async (req, res) => {
 });
 
 export const userResendLink = asyncHandler(async (req, res) => {
-  await generateEmailToken(req.user.userInfo, req.user.email);
-  return res.status(200).json(new ApiResponse(200, {}, "Email sent successfully"));
+  const token = await generateEmailToken(req.user.userInfo, req.user.email);
+  return res.status(200).json(new ApiResponse(200, { "token": token }, "Email sent successfully"));
 });
 
 export const login = asyncHandler(async (req, res) => {

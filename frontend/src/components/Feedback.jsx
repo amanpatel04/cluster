@@ -1,15 +1,11 @@
+import apiGateway from '../utils/apiGateway';
 import Card from './ui/Card';
 import Button from './ui/Button';
 const Feedback = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-    fetch('/api/v1/feedback/set/', {
-      method: 'POST',
-      credentials: 'include',
-      body: formData,
-    })
-      .then((response) => response.json())
+    apiGateway('/api/v1/feedback/set/', 'POST', formData, undefined)
       .then((data) => {
         if (data.success) {
           alert('Feedback submitted successfully!');

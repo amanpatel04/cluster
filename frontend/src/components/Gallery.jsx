@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import apiGateway from '../utils/apiGateway';
 import Image from './Image';
 
 const Gallery = () => {
@@ -23,17 +24,13 @@ const Gallery = () => {
     if (!confirm) {
       return;
     }
-    fetch(`/api/v1/image/delete/${images[index]}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    }).then((res) => {
-      res.json().then((data) => {
+    apiGateway(`/api/v1/image/delete/${images[index]}`, 'DELETE', undefined, undefined)
+      .then((data) => {
         if (data.success) {
           setImages(images.filter((image) => image !== images[index]));
           setIndex(Math.min(index, images.length - 2));
         }
       });
-    });
   };
 
   const prevImage = () => {
@@ -44,17 +41,12 @@ const Gallery = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/v1/image/get', {
-      method: 'GET',
-      credentials: 'include',
-      signal: controller.signal,
-    })
-      .then((res) => {
-        res.json().then((data) => {
-          if (data.success) {
-            setImages(data.data);
-          }
-        });
+    apiGateway('/api/v1/image/get', 'GET', undefined, controller)
+      .then((data) => {
+        if (data.success) {
+          setImages(data.data);
+        }
+
       })
       .catch((error) => {
         console.log(error.message);

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import apiGateway from '../utils/apiGateway';
 import classNames from 'classnames';
 
 const AudioPlayer = ({
@@ -82,17 +83,13 @@ const AudioPlayer = ({
     if (!confirm) {
       return;
     }
-    fetch(`/api/v1/audio/delete/${song._id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    }).then((res) => {
-      res.json().then((data) => {
+    apiGateway(`/api/v1/audio/delete/${song._id}`, 'DELETE', undefined, undefined)
+      .then((data) => {
         if (data.success) {
           removeFromList(song._id);
           setIndex(-1);
         }
       });
-    });
   };
 
   useEffect(() => {

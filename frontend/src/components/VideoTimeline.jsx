@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import apiGateway from '../utils/apiGateway';
 import byteToHuman from '../utils/byteToHuman';
 import Card from './ui/Card';
 
@@ -18,17 +19,11 @@ const VideoTimeline = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/v1/video/get', {
-      method: 'GET',
-      credentials: 'include',
-      signal: controller.signal,
-    })
-      .then((res) => {
-        res.json().then((data) => {
-          if (data.success) {
-            setVideoList(data.data);
-          }
-        });
+    apiGateway('/api/v1/video/get', 'GET', undefined, controller)
+      .then((data) => {
+        if (data.success) {
+          setVideoList(data.data);
+        }
       })
       .catch((error) => {
         console.log(error.message);

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 
+import apiGateway from '../utils/apiGateway';
 import Card from './ui/Card';
 import AudioPlayer from './AudioPlayer';
 const AudioList = () => {
@@ -27,17 +28,11 @@ const AudioList = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/v1/audio/get', {
-      method: 'GET',
-      credentials: 'include',
-      signal: controller.signal,
-    })
-      .then((res) => {
-        res.json().then((data) => {
-          if (data.success) {
-            setAudioList(data.data);
-          }
-        });
+    apiGateway('/api/v1/audio/get', 'GET', undefined, controller)
+      .then((data) => {
+        if (data.success) {
+          setAudioList(data.data);
+        }
       })
       .catch((error) => {
         console.log(error.message);

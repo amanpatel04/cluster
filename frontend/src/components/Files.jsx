@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import apiGateway from '../utils/apiGateway';
 import Card from './ui/Card';
 
 const Files = () => {
@@ -20,31 +21,21 @@ const Files = () => {
     if (!confirm) {
       return;
     }
-    fetch(`/api/v1/other/delete/${fileList[index]._id}`, {
-      method: 'DELETE',
-      credentials: 'include',
-    }).then((res) => {
-      res.json().then((data) => {
+    apiGateway(`/api/v1/other/delete/${fileList[index]._id}`, 'DELETE', undefined, undefined)
+      .then((data) => {
         if (data.success) {
           setFileList(fileList.filter((file) => file !== fileList[index]));
         }
       });
-    });
   };
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/v1/other/get', {
-      method: 'GET',
-      credentials: 'include',
-      signal: controller.signal,
-    })
-      .then((res) => {
-        res.json().then((data) => {
-          if (data.success) {
-            setFileList(data.data);
-          }
-        });
+    apiGateway('/api/v1/other/get', 'GET', undefined, controller)
+      .then((data) => {
+        if (data.success) {
+          setFileList(data.data);
+        }
       })
       .catch((error) => {
         console.log(error.message);

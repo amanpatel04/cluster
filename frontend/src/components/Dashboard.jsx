@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import byteToHuman from '../utils/byteToHuman';
+import apiGateway from '../utils/apiGateway';
 
 import Button from './ui/Button';
 
@@ -21,11 +22,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
 
   const handleResend = () => {
-    fetch('/api/v1/user/verify/resend/', {
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then((res) => res.json())
+    apiGateway('/api/v1/user/verify/resend/', 'GET', undefined, undefined)
       .then((data) => {
         if (data.success) {
           alert('Resend successful');
@@ -38,30 +35,24 @@ const Dashboard = () => {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    fetch('/api/v1/user/info', {
-      method: 'GET',
-      credentials: 'include',
-      signal: controller.signal,
-    })
-      .then((res) => {
-        res.json().then((data) => {
-          if (data.success) {
-            let total =
-              data.data.imageSize +
-              data.data.audioSize +
-              data.data.videoSize +
-              data.data.otherSize;
-            setTotalSize(total);
-            setUserInfo(data.data);
-          }
-        });
+
+    apiGateway('/api/v1/user/info/', 'GET', undefined, controller)
+      .then((response) => {
+        let data = response.data;
+        let total =
+          data.imageSize +
+          data.audioSize +
+          data.videoSize +
+          data.otherSize;
+        setTotalSize(total);
+        setUserInfo(data);
       })
       .catch((error) => {
         console.log(error.message);
       })
       .finally(() => {
         setLoading(false);
-      });
+      })
 
     return () => {
       controller.abort();
