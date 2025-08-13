@@ -8,7 +8,7 @@ const apiGateway = async (url, method, data, controller) => {
   }
 
   if (method === 'POST' || method === 'PUT') {
-    opts['body'] = JSON.stringify(data);
+    opts['body'] = data;
   }
   if (controller !== undefined) {
     opts['signal'] = controller.signal;
